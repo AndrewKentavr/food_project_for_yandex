@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 
+# pyuic5 shit.ui -o shit.py
+
+
 from PyQt5 import QtCore, QtWidgets
 import sys
 from food_func import *
@@ -51,10 +54,15 @@ class Ui_MainWindow(object):
     def input_search_recipes(self):
         text = ''
         text += self.lineEdit.text().lower()
+
         recipe = search_recipes(text)
+
+        info_recipe = recipe_information(recipe[0])
         cat = ''
-        cat += str(recipe[0]) + '\n'
-        cat += str(recipe[1])
+        cat += info_recipe[0] + '\n'
+        cat += info_recipe[1] + '\n'
+        cat += info_recipe[2] + '\n'
+
         self.listWidget.addItem(cat)
 
 
