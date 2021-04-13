@@ -37,11 +37,30 @@ def recipe_information(id):
 
             cc = summary.split('<b>')
 
-            cal = cc[1].split('</b>')[0]
-            prot = cc[2].split('</b>')[0]
-            fat = cc[3].split('</b>')[0]
+            num = [i for i in range(len(cc)) if 'calories' in cc[i]][0]
+
+            cal = cc[num].split('</b>')[0]
+            prot = cc[num].split('</b>')[0]
+            fat = cc[num].split('</b>')[0]
 
             return [cal, prot, fat]
+        except IndexError:
+            return "IndexError"
+    except AssertionError:
+        return "AssertionError"
+
+
+def random_recipes():
+    req = 'https://api.spoonacular.com/recipes/random'
+    food_params = {'apiKey': Globals.apiKey_spoonacular_1}
+
+    response = requests.get(req, params=food_params)
+
+    try:
+        assert response
+        json_response = response.json()
+        try:
+            return json_response['recipes']
         except IndexError:
             return "IndexError"
     except AssertionError:
