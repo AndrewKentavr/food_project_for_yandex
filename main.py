@@ -5,7 +5,7 @@
 
 from PyQt5 import QtCore, QtWidgets
 import sys
-from food_func import *
+from food_func import Recipes, Ingredient
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -55,9 +55,9 @@ class Ui_MainWindow(object):
         text = ''
         text += self.lineEdit.text().lower()
 
-        recipe = search_recipes(text)
+        recipe = Recipes.search_recipes(text)
 
-        info_recipe = recipe_information(recipe[0])
+        info_recipe = Recipes.recipe_information(recipe[0])
         cat = ''
         cat += info_recipe[0] + '\n'
         cat += info_recipe[1] + '\n'
