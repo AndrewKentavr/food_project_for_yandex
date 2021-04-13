@@ -23,6 +23,7 @@ def search_recipes(recipe):
     except AssertionError:
         return "AssertionError"
 
+
 def recipe_information(id):
     req = f'https://api.spoonacular.com/recipes/{id}/information'
     food_params = {'apiKey': Globals.apiKey_spoonacular_1}
@@ -61,6 +62,23 @@ def random_recipes():
         json_response = response.json()
         try:
             return json_response['recipes']
+        except IndexError:
+            return "IndexError"
+    except AssertionError:
+        return "AssertionError"
+
+
+def recipe_ingredients_id(id):
+    req = f'https://api.spoonacular.com/recipes/{id}/ingredientWidget.json'
+    food_params = {'apiKey': Globals.apiKey_spoonacular_1}
+
+    response = requests.get(req, params=food_params)
+
+    try:
+        assert response
+        json_response = response.json()
+        try:
+            return json_response['ingredients']
         except IndexError:
             return "IndexError"
     except AssertionError:
