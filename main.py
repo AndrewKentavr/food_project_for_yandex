@@ -1,10 +1,46 @@
 # -*- coding: utf-8 -*-
 # pyuic5 shit.ui -o shit.py
 
-
+from flask_login import LoginManager
+from flask import Flask
+from flask_restful import Api
 from PyQt5 import QtCore, QtGui, QtWidgets
 import sys
+
+from data import users_resources, db_session, calories_history_resources, search_history_resources
 from food_func import *
+
+app = Flask(__name__)
+api = Api(app)
+
+api.add_resource(users_resources.UserListResource, '/api/users')
+api.add_resource(users_resources.UserResource, '/api/users/<int:user_id>')
+api.add_resource(search_history_resources.SearchHistoryListResource, '/api/search_histories')
+api.add_resource(search_history_resources.SearchHistoryResource, '/api/search_histories/<int:history_id>')
+api.add_resource(calories_history_resources.CaloriesHistoryListResource, '/api/search_histories')
+api.add_resource(calories_history_resources.CaloriesHistoryResource, '/api/search_histories/<int:history_id>')
+
+app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
+login_manager = LoginManager()
+login_manager.init_app(app)
+
+
+@app.route('/')
+def index():
+    return None
+
+
+class ApplicationThread(QtCore.QThread):
+    def __init__(self, application, port=5000):
+        super(ApplicationThread, self).__init__()
+        self.application = application
+        self.port = port
+
+    def __del__(self):
+        self.wait()
+
+    def run(self):
+        self.application.run(port=self.port, threaded=True)
 
 
 class Ui_MainWindow(object):
@@ -44,7 +80,6 @@ class Ui_MainWindow(object):
         self.btn_info_recipe.setStyleSheet("background: white; border: 2px solid #13bd4b;")
         self.btn_info_recipe.setObjectName("pushButton")
         self.btn_info_recipe.clicked.connect(self.input_search_recipes)
-
 
         self.lineEdit_info_recipe = QtWidgets.QLineEdit(self.tab)
         self.lineEdit_info_recipe.setGeometry(QtCore.QRect(20, 30, 281, 31))
@@ -191,9 +226,14 @@ class Ui_MainWindow(object):
 
 
 if __name__ == '__main__':
-    app = QtWidgets.QApplication(sys.argv)
+    app_window = QtWidgets.QApplication(sys.argv)
+    webapp = ApplicationThread(app)
+    webapp.start()
+    app_window.aboutToQuit.connect(webapp.terminate)
     MainWindow = QtWidgets.QMainWindow()
     ex = Ui_MainWindow()
     ex.setupUi(MainWindow)
     MainWindow.show()
-    sys.exit(app.exec_())
+
+    db_session.global_init('db/food_system.sqlite')
+    sys.exit(app_window.exec_())
