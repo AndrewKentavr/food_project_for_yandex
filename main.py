@@ -53,6 +53,9 @@ class Ui_MainWindow(object):
         self.lineEdit_info_recipe.setObjectName("lineEdit")
         self.tabWidget.addTab(self.tab, "")
 
+        self.litle_lable = QtWidgets.QLabel(self.tab)
+        self.litle_lable.setGeometry(QtCore.QRect(400, 40, 312, 231))
+
         self.tab_2 = QtWidgets.QWidget()
         self.tab_2.setObjectName("tab_2")
         self.btn_random_recipe = QtWidgets.QPushButton(self.tab_2)
@@ -185,6 +188,13 @@ class Ui_MainWindow(object):
             text = english_trans(text)
 
         recipe = search_recipes(text)
+
+        img_url = recipe[1]
+
+        image = QtGui.QImage()
+        image.loadFromData(requests.get(img_url).content)
+
+        self.litle_lable.setPixmap(QtGui.QPixmap(image))
 
         info_recipe = recipe_information(recipe[0])
         finale_text = ''
