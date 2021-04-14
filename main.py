@@ -73,11 +73,15 @@ class Ui_MainWindow(object):
         self.btn_random_recipe.setFont(font)
         self.btn_random_recipe.setStyleSheet("background: white; border: 2px solid #13bd4b;")
         self.btn_random_recipe.setObjectName("pushButton_5")
+        self.btn_random_recipe.clicked.connect(self.output_random_recipes)
 
         self.listWidget_random_recipe = QtWidgets.QListWidget(self.tab_2)
         self.listWidget_random_recipe.setGeometry(QtCore.QRect(10, 90, 281, 161))
         self.listWidget_random_recipe.setObjectName("listWidget_2")
         self.tabWidget.addTab(self.tab_2, "")
+
+        self.litle_lable_2 = QtWidgets.QLabel(self.tab_2)
+        self.litle_lable_2.setGeometry(QtCore.QRect(400, 40, 312, 231))
 
         self.tab_3 = QtWidgets.QWidget()
         self.tab_3.setObjectName("tab_3")
@@ -193,8 +197,10 @@ class Ui_MainWindow(object):
 
         image = QtGui.QImage()
         image.loadFromData(requests.get(img_url).content)
+        pixmap_0 = QtGui.QPixmap(image)
+        pixmap = pixmap_0.scaled(312, 231)
 
-        self.litle_lable.setPixmap(QtGui.QPixmap(image))
+        self.litle_lable.setPixmap(pixmap)
 
         info_recipe = recipe_information(recipe[0])
         finale_text = ''
@@ -204,6 +210,26 @@ class Ui_MainWindow(object):
 
         self.listWidget_info_recipe.clear()
         self.listWidget_info_recipe.addItem(finale_text)
+
+    def output_random_recipes(self):
+        ran_rec = random_recipes()
+
+        text = ''
+        text += '----- ' + ran_rec[0] + ' -----\n'
+        text += ran_rec[2] + '\n'
+        text += ran_rec[3] + '\n'
+        text += ran_rec[4] + '\n'
+
+        image = QtGui.QImage()
+        image.loadFromData(requests.get(ran_rec[1]).content)
+
+        pixmap_0 = QtGui.QPixmap(image)
+        pixmap = pixmap_0.scaled(312, 231)
+
+        self.litle_lable_2.setPixmap(pixmap)
+
+        self.listWidget_random_recipe.clear()
+        self.listWidget_random_recipe.addItem(text)
 
 
 if __name__ == '__main__':
