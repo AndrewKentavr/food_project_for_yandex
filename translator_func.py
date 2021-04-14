@@ -5,12 +5,12 @@ class Translator():
     def english_trans(self):
         req = 'https://translate.api.cloud.yandex.net/translate/v2/translate'
 
-        params = {'folder_id': 'b1ghv3pdod31alo8jrrn',
+        params = {'folder_id': Globals.id_yandex,
                   "texts": "чипсы",
                   "targetLanguageCode": "en"}
 
         hed = {
-            'Authorization': 'Api-Key AQVN16eXyhRvpmU7ozpshNnfrZNwmIIsDx2FI6W7'
+            'Authorization': Globals.apiKey_yandex_translator
         }
 
         response = requests.post(req, params=params, headers=hed)
