@@ -5,6 +5,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 import sys
 from food_func import *
+from translator_func import *
 
 
 class Ui_MainWindow(object):
@@ -44,7 +45,6 @@ class Ui_MainWindow(object):
         self.btn_info_recipe.setStyleSheet("background: white; border: 2px solid #13bd4b;")
         self.btn_info_recipe.setObjectName("pushButton")
         self.btn_info_recipe.clicked.connect(self.input_search_recipes)
-
 
         self.lineEdit_info_recipe = QtWidgets.QLineEdit(self.tab)
         self.lineEdit_info_recipe.setGeometry(QtCore.QRect(20, 30, 281, 31))
@@ -179,15 +179,21 @@ class Ui_MainWindow(object):
         text = ''
         text += self.lineEdit_info_recipe.text().lower()
 
+        lang = detect_language(text)
+
+        if lang != 'en':
+            text = english_trans(text)
+
         recipe = search_recipes(text)
 
         info_recipe = recipe_information(recipe[0])
-        cat = ''
-        cat += info_recipe[0] + '\n'
-        cat += info_recipe[1] + '\n'
-        cat += info_recipe[2] + '\n'
+        finale_text = ''
+        finale_text += info_recipe[0] + '\n'
+        finale_text += info_recipe[1] + '\n'
+        finale_text += info_recipe[2] + '\n'
 
-        self.listWidget_info_recipe.addItem(cat)
+        self.listWidget_info_recipe.clear()
+        self.listWidget_info_recipe.addItem(finale_text)
 
 
 if __name__ == '__main__':
