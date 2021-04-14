@@ -38,15 +38,15 @@ def recipe_information(id):
             cc = summary.split('<b>')
 
             num = [i for i in range(len(cc)) if 'calories' in cc[i]][0]
-
             cal = cc[num].split('</b>')[0]
-            prot = cc[num].split('</b>')[1]
-            fat = cc[num].split('</b>')[2]
-
+            prot = cc[num + 1].split('</b>')[0]
+            fat = cc[num + 2].split('</b>')[0]
             return [cal, prot, fat]
         except IndexError:
+            print("IndexError")
             return "IndexError"
     except AssertionError:
+        print("AssertionError")
         return "AssertionError"
 
 
@@ -60,12 +60,25 @@ def random_recipes():
         assert response
         json_response = response.json()
         try:
-            return json_response['recipes']
+            name = json_response['recipes'][0]['title']
+            image = json_response['recipes'][0]['image']
+            summary = json_response['recipes'][0]['summary']
+
+            cc = summary.split('<b>')
+
+            num = [i for i in range(len(cc)) if 'calories' in cc[i]][0]
+            cal = cc[num].split('</b>')[0]
+            prot = cc[num + 1].split('</b>')[0]
+            fat = cc[num + 2].split('</b>')[0]
+            print([name, image, cal, prot, fat])
+
+            return [name, image, cal, prot, fat]
         except IndexError:
+            print("IndexError")
             return "IndexError"
     except AssertionError:
+        print("AssertionError")
         return "AssertionError"
-
 
 def recipe_ingredients_id(id):
     req = f'https://api.spoonacular.com/recipes/{id}/ingredientWidget.json'
@@ -79,8 +92,10 @@ def recipe_ingredients_id(id):
         try:
             return json_response['ingredients']
         except IndexError:
+            print("IndexError")
             return "IndexError"
     except AssertionError:
+        print("AssertionError")
         return "AssertionError"
 
 
@@ -102,8 +117,10 @@ def ingredient_search(query):
             image_ingred = json_response['results'][0]['name']
             return [id_ingred, image_ingred]
         except IndexError:
+            print("IndexError")
             return "IndexError"
     except AssertionError:
+        print("AssertionError")
         return "AssertionError"
 
 
@@ -119,6 +136,8 @@ def ingredient_information(id):
         try:
             pass
         except IndexError:
+            print("IndexError")
             return "IndexError"
     except AssertionError:
+        print("AssertionError")
         return "AssertionError"
