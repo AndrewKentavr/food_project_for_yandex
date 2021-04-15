@@ -1,7 +1,11 @@
 from logging.config import fileConfig
 
+import sys
+import os
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
+from data.db_session import SqlAlchemyBase
+import data.__all_models
 
 from alembic import context
 
@@ -14,10 +18,14 @@ config = context.config
 fileConfig(config.config_file_name)
 
 # add your model's MetaData object here
+
+sys.path.insert(0, os.getcwd())
+target_metadata = SqlAlchemyBase.metadata
+
+
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-target_metadata = None
 
 
 # other values from the config, defined by the needs of env.py,
