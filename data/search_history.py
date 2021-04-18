@@ -9,5 +9,6 @@ class SearchData(SqlAlchemyBase, SerializerMixin):
 
     id = sqlalchemy.Column(sqlalchemy.Integer,
                            primary_key=True, autoincrement=True)
-    search = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    user = orm.relation('User')
+    user_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey('users.id'))
+    history = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    user = orm.relationship('User', backref="searches")

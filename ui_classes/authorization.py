@@ -17,10 +17,6 @@ class Ui_Dialog_2(object):
         self.lineEdit_4.setSizePolicy(sizePolicy)
         self.lineEdit_4.setStyleSheet("background: white; border: 2px solid #13bd4b; border-radius: 8px;")
         self.lineEdit_4.setObjectName("lineEdit_4")
-        self.pushButton = QtWidgets.QPushButton(Dialog)
-        self.pushButton.setGeometry(QtCore.QRect(20, 410, 131, 31))
-        self.pushButton.setStyleSheet("")
-        self.pushButton.setObjectName("pushButton")
         self.pushButton_2 = QtWidgets.QPushButton(Dialog)
         self.pushButton_2.setGeometry(QtCore.QRect(220, 410, 131, 31))
         self.pushButton_2.setObjectName("pushButton_2")
@@ -76,7 +72,6 @@ class Ui_Dialog_2(object):
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
         Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
-        self.pushButton.setText(_translate("Dialog", "Регистрация"))
         self.pushButton_2.setText(_translate("Dialog", "Войти"))
         self.label.setText(_translate("Dialog", "nickname"))
         self.label_2.setText(_translate("Dialog", "email"))

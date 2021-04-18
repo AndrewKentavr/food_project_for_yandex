@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from PyQt5 import QtCore, QtGui, QtWidgets
 import sys
-from authorization import Ui_Dialog_2
+
+from PyQt5 import QtCore, QtGui, QtWidgets
 
 
 class Ui_Dialog(object):
@@ -19,10 +19,6 @@ class Ui_Dialog(object):
         self.lineEdit_4.setSizePolicy(sizePolicy)
         self.lineEdit_4.setStyleSheet("background: white; border: 2px solid #13bd4b; border-radius: 8px;")
         self.lineEdit_4.setObjectName("lineEdit_4")
-        self.pushButton = QtWidgets.QPushButton(Dialog)
-        self.pushButton.setGeometry(QtCore.QRect(20, 530, 131, 31))
-        self.pushButton.setStyleSheet("")
-        self.pushButton.setObjectName("pushButton")
         self.pushButton_2 = QtWidgets.QPushButton(Dialog)
         self.pushButton_2.setGeometry(QtCore.QRect(220, 530, 131, 31))
         self.pushButton_2.setObjectName("pushButton_2")
@@ -91,27 +87,17 @@ class Ui_Dialog(object):
         self.label_4.setFont(font)
         self.label_4.setObjectName("label_4")
 
-        self.pushButton_2.clicked.connect(self.open_reg)
-
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
 
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
         Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
-        self.pushButton.setText(_translate("Dialog", "Авторизация"))
         self.pushButton_2.setText(_translate("Dialog", "Зарегестрироваться"))
         self.label.setText(_translate("Dialog", "nickname"))
         self.label_2.setText(_translate("Dialog", "email"))
         self.label_3.setText(_translate("Dialog", "password"))
         self.label_4.setText(_translate("Dialog", "repeat password"))
-
-    def open_reg(self):
-        self.window = QtWidgets.QMainWindow()
-        self.np = Ui_Dialog_2()
-        self.np.setupUi(self.window)
-        self.window.show()
-
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)

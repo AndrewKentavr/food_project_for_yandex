@@ -1,9 +1,10 @@
-import parser
+from flask import abort, jsonify, request
+from flask_restful import Resource
 
+from data.calories_history import CaloriesData
+from data.search_history import SearchData
 from . import db_session
 from .users import User
-from flask import abort, jsonify
-from flask_restful import Resource
 
 
 def abort_if_user_not_found(user_id):
@@ -38,13 +39,17 @@ class UserListResource(Resource):
             only=('nick_name', 'email', 'id')) for item in news]})
 
     def post(self):
-        args = parser.parse_args()
         session = db_session.create_session()
-        user = User(
-            email=args['email'],
-            nick_name=args['nick_name'],
-        )
-        user.set_password(args['password'])
+
+        user = User(email=request.json['email'], nick_name=request.json['nick_name'])
+        user.set_password(request.json['password'])
         session.add(user)
         session.commit()
-        return jsonify({'success': 'OK'})
+
+        search_history = SearchData(user_id=user.id, history='[]')
+        calories_history = CaloriesData(user_id=user.id, calories='[]')
+        session.add(calories_history)
+        session.add(search_history)
+        session.commit()
+
+        return jsonify({'success': f'{user.id}'})
