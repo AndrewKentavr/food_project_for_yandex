@@ -80,6 +80,7 @@ def random_recipes():
         print("AssertionError")
         return "AssertionError"
 
+
 def recipe_ingredients_id(id):
     req = f'https://api.spoonacular.com/recipes/{id}/ingredientWidget.json'
     food_params = {'apiKey': Globals.apiKey_spoonacular_1}
