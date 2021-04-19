@@ -7,6 +7,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
+        self.widget = Dialog
         Dialog.setObjectName("Dialog")
         Dialog.resize(369, 625)
         Dialog.setStyleSheet("background: white;")
@@ -49,15 +50,15 @@ class Ui_Dialog(object):
         font.setWeight(75)
         self.label_3.setFont(font)
         self.label_3.setObjectName("label_3")
-        self.lineEdit_5 = QtWidgets.QLineEdit(Dialog)
-        self.lineEdit_5.setGeometry(QtCore.QRect(20, 210, 339, 29))
+        self.email_line = QtWidgets.QLineEdit(Dialog)
+        self.email_line.setGeometry(QtCore.QRect(20, 210, 339, 29))
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.lineEdit_5.sizePolicy().hasHeightForWidth())
-        self.lineEdit_5.setSizePolicy(sizePolicy)
-        self.lineEdit_5.setStyleSheet("background: white; border: 2px solid #13bd4b; border-radius: 8px;")
-        self.lineEdit_5.setObjectName("lineEdit_5")
+        sizePolicy.setHeightForWidth(self.email_line.sizePolicy().hasHeightForWidth())
+        self.email_line.setSizePolicy(sizePolicy)
+        self.email_line.setStyleSheet("background: white; border: 2px solid #13bd4b; border-radius: 8px;")
+        self.email_line.setObjectName("lineEdit_5")
         self.lineEdit_6 = QtWidgets.QLineEdit(Dialog)
         self.lineEdit_6.setGeometry(QtCore.QRect(20, 320, 339, 29))
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
@@ -98,6 +99,7 @@ class Ui_Dialog(object):
         self.label_2.setText(_translate("Dialog", "email"))
         self.label_3.setText(_translate("Dialog", "password"))
         self.label_4.setText(_translate("Dialog", "repeat password"))
+
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)

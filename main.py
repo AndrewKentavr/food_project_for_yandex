@@ -70,16 +70,19 @@ class ApplicationThread(QtCore.QThread):
 
 class MainWindowCore(Ui_MainWindow):
     def __init__(self):
+        self.user = None
         self.login_window = Ui_Dialog_2()
         self.register_window = Ui_Dialog()
-        try:
-            if current_user.is_authenticated:
-                self.login_window = Ui_Dialog_2()
-                self.login_window.setupUi(MainWindow)
-        except AttributeError:
-            self.register_window = Ui_Dialog()
-            self.register_window.setupUi(MainWindow)
-            self.register_window.pushButton_2.clicked.connect(self.registration)
+        self.login_window.setupUi(MainWindow)
+        self.login_window.auth_btn.clicked.connect(self.authorization)
+        self.login_window.reg_btn.clicked.connect(self.registration)
+
+    def authorization(self):
+        db_sess = db_session.create_session()
+        self.user = db_sess.query(User).get(self.login_window.email_line.text())
+        if self.user and self.user.check_password(self, self.login_window.password_line):
+            self.login_window.widget.hide()
+            Ui_MainWindow.setupUi(self, MainWindow)
 
     def input_search_recipes(self):
         text = ''
@@ -131,18 +134,18 @@ class MainWindowCore(Ui_MainWindow):
         self.listWidget_random_recipe.addItem(text)
 
     def registration(self):
-        if validate_email(self.register_window.lineEdit_5.text()) and \
+        self.login_window.widget_switch()
+        self.register_window.setupUi(MainWindow)
+        if validate_email(self.register_window.email_line.text()) and \
                 self.register_window.lineEdit_6.text() == self.register_window.lineEdit_6.text():
-            print(self.register_window.lineEdit_5.text())
             user = {
                 'nick_name': self.register_window.lineEdit_4.text(),
-                'email': self.register_window.lineEdit_5.text(),
+                'email': self.register_window.email_line.text(),
                 'password': self.register_window.lineEdit_6.text()
             }
             post("http://localhost:5000/api/users", json=user).json()
-            self.login_window = Ui_Dialog_2()
+            self.register_window.widget.hide()
             self.login_window.setupUi(MainWindow)
-            self.login_window.pushButton_2.clicked.connect(self.login)
 
     def login(self):
         pass
