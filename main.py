@@ -119,18 +119,25 @@ class MainWindowCore(Ui_MainWindow):
 
         info_recipe = recipe_information(recipe[0])
         ingred_recipe = recipe_ingredients_id(recipe[0])
+        text_ing = ''
 
-        finale_text = ''
-        finale_text += info_recipe[0] + '\n'
-        finale_text += info_recipe[1] + '\n'
-        finale_text += info_recipe[2] + '\n'
-        finale_text += '-----Ingredients:' + '\n'
+        text_ing += 'Ingredients:' + '\n'
 
         for i in range(len(ingred_recipe)):
-            finale_text += str(ingred_recipe[i]) + '\n'
+            text_ing += '-' + str(ingred_recipe[i]) + '\n'
+
+        recipe_text = ''
+        recipe_text += 'Info:' + '\n'
+
+        recipe_text += '-' + info_recipe[0] + '\n'
+        recipe_text += '-' + info_recipe[1] + '\n'
+        recipe_text += '-' + info_recipe[2] + '\n'
 
         self.listWidget_info_recipe.clear()
-        self.listWidget_info_recipe.addItem(finale_text)
+        self.listWidget_info_recipe.addItem(text_ing)
+
+        self.listWidget_info_recipe_2.clear()
+        self.listWidget_info_recipe_2.addItem(recipe_text)
 
     def output_random_recipes(self):
         ran_rec = random_recipes()
