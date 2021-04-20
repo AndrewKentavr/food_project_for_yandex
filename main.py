@@ -4,16 +4,16 @@ import sys
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from flask import Flask
-from flask_login import LoginManager, current_user, login_user
+from flask_login import LoginManager
 from flask_restful import Api
 from requests import post
 from validate_email import validate_email
-from ui_classes.authorization import Ui_Dialog_2
 
 from data import users_resources, db_session, calories_history_resources, search_history_resources
 from data.users import User
 from food_func import *
 from translator_func import *
+from ui_classes.authorization import Ui_Dialog_2
 from ui_classes.main_windowUI import Ui_MainWindow
 from ui_classes.registration import Ui_Dialog
 
@@ -73,16 +73,26 @@ class MainWindowCore(Ui_MainWindow):
         self.user = None
         self.login_window = Ui_Dialog_2()
         self.register_window = Ui_Dialog()
+
         self.login_window.setupUi(MainWindow)
+        self.register_window.setupUi(MainWindow)
+        self.setupUi(MainWindow)
+        self.register_window.widget_off()
+        self.widget_off()
+
         self.login_window.auth_btn.clicked.connect(self.authorization)
-        self.login_window.reg_btn.clicked.connect(self.registration)
+        self.login_window.reg_btn.clicked.connect(self.registration_switch)
+        self.register_window.register_button.clicked.connect(self.registration)
+        self.btn_info_recipe.clicked.connect(self.input_search_recipes)
+        self.btn_random_recipe.clicked.connect(self.output_random_recipes)
 
     def authorization(self):
         db_sess = db_session.create_session()
-        self.user = db_sess.query(User).get(self.login_window.email_line.text())
-        if self.user and self.user.check_password(self, self.login_window.password_line):
-            self.login_window.widget.hide()
-            Ui_MainWindow.setupUi(self, MainWindow)
+        user = db_sess.query(User).filter(User.email == self.login_window.email_line.text())[0]
+        if user and user.check_password(self.login_window.password_line.text()):
+            self.login_window.widget_off()
+            self.widget_on()
+        db_sess.close()
 
     def input_search_recipes(self):
         text = ''
@@ -133,22 +143,58 @@ class MainWindowCore(Ui_MainWindow):
         self.listWidget_random_recipe.clear()
         self.listWidget_random_recipe.addItem(text)
 
-    def registration(self):
-        self.login_window.widget_switch()
-        self.register_window.setupUi(MainWindow)
-        if validate_email(self.register_window.email_line.text()) and \
-                self.register_window.lineEdit_6.text() == self.register_window.lineEdit_6.text():
-            user = {
-                'nick_name': self.register_window.lineEdit_4.text(),
-                'email': self.register_window.email_line.text(),
-                'password': self.register_window.lineEdit_6.text()
-            }
-            post("http://localhost:5000/api/users", json=user).json()
-            self.register_window.widget.hide()
-            self.login_window.setupUi(MainWindow)
+    def registration_switch(self):
+        self.login_window.widget_off()
+        self.register_window.widget_on()
 
-    def login(self):
-        pass
+    def registration(self):
+        if validate_email(self.register_window.email_register_line.text()):
+            if self.email_in_database():
+                if self.password_check():
+                    if self.register_window.password_register_line.text() == \
+                            self.register_window.repeat_password_line.text():
+                        user = {
+                            'nick_name': self.register_window.nick_line.text(),
+                            'email': self.register_window.email_register_line.text(),
+                            'password': self.register_window.password_register_line.text()
+                        }
+                        post("http://localhost:5000/api/users", json=user).json()
+                        self.register_window.widget_off()
+                        self.login_window.widget_on()
+                    else:
+                        print('пароли не совпадают')
+                else:
+                    print('пароль небезопасный')
+            else:
+                print('такой пользователь существует')
+        else:
+            print('неккоректно введена электронная почта')
+
+    def email_in_database(self):
+        db_sess = db_session.create_session()
+        try:
+            user = db_sess.query(User).get(self.register_window.email_register_line.text())
+            db_sess.close()
+            assert user
+            return False
+        except AssertionError:
+            return True
+
+    def password_check(self):
+        have_digit = False
+        have_letter = False
+        have_big_letter = False
+        for element in self.register_window.password_register_line.text():
+            if element.isdigit():
+                have_digit = True
+            elif element.lower() != element:
+                have_big_letter = True
+            else:
+                have_letter = True
+        if have_letter and have_big_letter and have_digit and \
+                len(self.register_window.password_register_line.text()) >= 8:
+            return True
+        return False
 
 
 if __name__ == '__main__':

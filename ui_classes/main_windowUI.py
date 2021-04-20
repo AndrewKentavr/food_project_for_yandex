@@ -1,5 +1,4 @@
 from PyQt5 import QtCore, QtWidgets, QtGui
-from flask_login import login_required
 
 
 class Ui_MainWindow(object):
@@ -158,6 +157,14 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
         self.tabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+
+    def widget_off(self):
+        self.centralwidget.close()
+        self.menubar.close()
+
+    def widget_on(self):
+        self.centralwidget.show()
+        self.menubar.show()
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate

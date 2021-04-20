@@ -6,7 +6,7 @@ import sys
 class Ui_Dialog_2(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
-        Dialog.resize(369, 508)
+        Dialog.resize(753, 711)
         Dialog.setStyleSheet("background: white;")
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
@@ -65,13 +65,21 @@ class Ui_Dialog_2(object):
         self.label_2.setText(_translate("Dialog", "email"))
         self.label_3.setText(_translate("Dialog", "password"))
 
-    def widget_switch(self):
+    def widget_off(self):
         self.auth_btn.close()
         self.reg_btn.close()
         self.email_line.close()
         self.password_line.close()
         self.label_2.close()
         self.label_3.close()
+
+    def widget_on(self):
+        self.auth_btn.show()
+        self.reg_btn.show()
+        self.email_line.show()
+        self.password_line.show()
+        self.label_2.show()
+        self.label_3.show()
 
 
 if __name__ == '__main__':

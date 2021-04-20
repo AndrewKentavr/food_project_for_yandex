@@ -16,6 +16,7 @@ class User(SqlAlchemyBase, SerializerMixin):
     nick_name = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     email = sqlalchemy.Column(sqlalchemy.String, unique=True, nullable=True)
     password = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    hashed_password = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     search_history = orm.relationship("SearchData", order_by=SearchData.id,
                                       backref='history_search')
     calories_history = orm.relationship("CaloriesData", order_by=CaloriesData.id,
