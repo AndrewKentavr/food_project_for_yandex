@@ -118,10 +118,16 @@ class MainWindowCore(Ui_MainWindow):
         self.litle_lable.setPixmap(pixmap)
 
         info_recipe = recipe_information(recipe[0])
+        ingred_recipe = recipe_ingredients_id(recipe[0])
+
         finale_text = ''
         finale_text += info_recipe[0] + '\n'
         finale_text += info_recipe[1] + '\n'
         finale_text += info_recipe[2] + '\n'
+        finale_text += '-----Ingredients:' + '\n'
+
+        for i in range(len(ingred_recipe)):
+            finale_text += str(ingred_recipe[i]) + '\n'
 
         self.listWidget_info_recipe.clear()
         self.listWidget_info_recipe.addItem(finale_text)

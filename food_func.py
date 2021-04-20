@@ -91,7 +91,11 @@ def recipe_ingredients_id(id):
         assert response
         json_response = response.json()
         try:
-            return json_response['ingredients']
+            root = json_response['ingredients']
+            all_ing = []
+            for i in range(len(root)):
+                all_ing.append(root[i]['name'])
+            return all_ing
         except IndexError:
             print("IndexError")
             return "IndexError"
