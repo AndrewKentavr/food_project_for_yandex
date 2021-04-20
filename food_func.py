@@ -131,7 +131,8 @@ def ingredient_search(query):
 
 def ingredient_information(id):
     req = f'https://api.spoonacular.com/food/ingredients/{id}/information'
-    food_params = {'apiKey': Globals.apiKey_spoonacular_1}
+    food_params = {'apiKey': Globals.apiKey_spoonacular_1,
+                   'amount': 1}
 
     response = requests.get(req, params=food_params)
 
@@ -139,7 +140,23 @@ def ingredient_information(id):
         assert response
         json_response = response.json()
         try:
-            pass
+            nutrients = json_response['nutrition']['nutrients']
+
+            info = {}
+            for i in range(len(nutrients)):
+                if "Calories" == nutrients[i]['name']:
+                    info["Calories"] = nutrients[i]
+
+                elif "Fat" == nutrients[i]['name']:
+                    info["Fat"] = nutrients[i]
+
+                elif "Sugar" == nutrients[i]['name']:
+                    info["Sugar"] = nutrients[i]
+
+                elif "Protein" == nutrients[i]['name']:
+                    info["Protein"] = nutrients[i]
+
+            return info
         except IndexError:
             print("IndexError")
             return "IndexError"

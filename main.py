@@ -85,6 +85,7 @@ class MainWindowCore(Ui_MainWindow):
         self.register_window.register_button.clicked.connect(self.registration)
         self.btn_info_recipe.clicked.connect(self.input_search_recipes)
         self.btn_random_recipe.clicked.connect(self.output_random_recipes)
+        self.btn_search_ingredients.clicked.connect(self.input_search_ingredients)
 
     def authorization(self):
         db_sess = db_session.create_session()
@@ -158,6 +159,31 @@ class MainWindowCore(Ui_MainWindow):
 
         self.listWidget_random_recipe.clear()
         self.listWidget_random_recipe.addItem(text)
+
+    def input_search_ingredients(self):
+
+        text = ''
+        text += self.lineEdit_info_ingredient.text().lower()
+
+        lang = detect_language(text)
+
+        if lang != 'en':
+            text = english_trans(text)
+
+        ingredient = ingredient_search(text)  # [0] - id; [1] - name
+
+        info_ing = ingredient_information(ingredient[0])
+
+        text = ''
+        text += 'Name -- ' + str(ingredient[1]) + '\n'
+        text += 'Calories:' + str(info_ing['Calories']['amount']) + '\n'
+        text += 'Fat:' + str(info_ing['Fat']['amount']) + '\n'
+        text += 'Sugar:' + str(info_ing['Sugar']['amount']) + '\n'
+        text += 'Protein:' + str(info_ing['Protein']['amount']) + '\n'
+
+
+        self.listWidget_info_ingredients.clear()
+        self.listWidget_info_ingredients.addItem(text)
 
     def registration_switch(self):
         self.login_window.widget_off()

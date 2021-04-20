@@ -57,7 +57,6 @@ class Ui_MainWindow(object):
 
         # ---------------------TAB 2-------------------------------------------
 
-
         self.tab_2 = QtWidgets.QWidget()
         self.tab_2.setObjectName("tab_2")
 
@@ -86,7 +85,6 @@ class Ui_MainWindow(object):
         self.litle_lable_2.setGeometry(QtCore.QRect(400, 40, 312, 231))
 
         # ---------------------TAB 3-------------------------------------------
-
 
         self.tab_3 = QtWidgets.QWidget()
         self.tab_3.setObjectName("tab_3")
@@ -131,7 +129,6 @@ class Ui_MainWindow(object):
 
         # ---------------------TAB 4-------------------------------------------
 
-
         self.tab_4 = QtWidgets.QWidget()
         self.tab_4.setObjectName("tab_4")
         self.btn_search_ingredients = QtWidgets.QPushButton(self.tab_4)
@@ -154,11 +151,11 @@ class Ui_MainWindow(object):
         self.listWidget_info_ingredients.setGeometry(QtCore.QRect(390, 60, 291, 381))
         self.listWidget_info_ingredients.setObjectName("listWidget_5")
 
-        self.lineEdit_2 = QtWidgets.QLineEdit(self.tab_4)
-        self.lineEdit_2.setGeometry(QtCore.QRect(20, 20, 281, 31))
-        self.lineEdit_2.setStyleSheet("background: white; border: 2px solid #13bd4b;")
-        self.lineEdit_2.setText("")
-        self.lineEdit_2.setObjectName("lineEdit_2")
+        self.lineEdit_info_ingredient = QtWidgets.QLineEdit(self.tab_4)
+        self.lineEdit_info_ingredient.setGeometry(QtCore.QRect(20, 20, 281, 31))
+        self.lineEdit_info_ingredient.setStyleSheet("background: white; border: 2px solid #13bd4b;")
+        self.lineEdit_info_ingredient.setText("")
+        self.lineEdit_info_ingredient.setObjectName("lineEdit_2")
 
         self.listWidget_info_ingredients_2 = QtWidgets.QListWidget(self.tab_4)
         self.listWidget_info_ingredients_2.setGeometry(QtCore.QRect(20, 130, 311, 201))
