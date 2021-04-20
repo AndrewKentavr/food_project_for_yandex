@@ -148,27 +148,30 @@ class MainWindowCore(Ui_MainWindow):
         self.register_window.widget_on()
 
     def registration(self):
-        if validate_email(self.register_window.email_register_line.text()):
-            if self.email_in_database():
-                if self.password_check():
-                    if self.register_window.password_register_line.text() == \
-                            self.register_window.repeat_password_line.text():
-                        user = {
-                            'nick_name': self.register_window.nick_line.text(),
-                            'email': self.register_window.email_register_line.text(),
-                            'password': self.register_window.password_register_line.text()
-                        }
-                        post("http://localhost:5000/api/users", json=user).json()
-                        self.register_window.widget_off()
-                        self.login_window.widget_on()
+        if len(self.register_window.nick_line.text()) <= 40:
+            if validate_email(self.register_window.email_register_line.text()):
+                if self.email_in_database():
+                    if self.password_check():
+                        if self.register_window.password_register_line.text() == \
+                                self.register_window.repeat_password_line.text():
+                            user = {
+                                'nick_name': self.register_window.nick_line.text(),
+                                'email': self.register_window.email_register_line.text(),
+                                'password': self.register_window.password_register_line.text()
+                            }
+                            post("http://localhost:5000/api/users", json=user).json()
+                            self.register_window.widget_off()
+                            self.login_window.widget_on()
+                        else:
+                            print('пароли не совпадают')
                     else:
-                        print('пароли не совпадают')
+                        print('пароль небезопасный')
                 else:
-                    print('пароль небезопасный')
+                    print('такой пользователь существует')
             else:
-                print('такой пользователь существует')
+                print('неккоректно введена электронная почта')
         else:
-            print('неккоректно введена электронная почта')
+            print('длинна ник не должна превышать 40 символов')
 
     def email_in_database(self):
         db_sess = db_session.create_session()
