@@ -95,12 +95,15 @@ class MainWindowCore(Ui_MainWindow):
         db_sess.close()
 
     def input_search_recipes(self):
+        # ВОТ ТУТ ХРАНИТЬСЯ НАЗВАНИЕ РЕЦЕПТА
+        # Например: Яичница
+
         text = ''
         text += self.lineEdit_info_recipe.text().lower()
 
         lang = detect_language(text)
 
-        if lang != 'en':
+        if lang != 'en':  # тут с помощью Api Яндекса определяется на каком языке написан запрос
             text = english_trans(text)
 
         recipe = search_recipes(text)
