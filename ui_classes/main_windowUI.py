@@ -186,6 +186,9 @@ class Ui_MainWindow(object):
         self.tabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
+        self.error_dialog = QtWidgets.QErrorMessage()
+        self.error_dialog.setGeometry(700, 400, 150, 150)
+
     def widget_off(self):
         self.centralwidget.close()
         self.menubar.close()

@@ -102,6 +102,14 @@ class MainWindowCore(Ui_MainWindow):
         text = ''
         text += self.lineEdit_info_recipe.text().lower()
 
+        if text.isspace() or not text:
+            self.error_dialog.showMessage('Вы ничего не ввели')
+            return 0
+
+        if any(not c.isalnum() for c in text) or any(map(str.isdigit, text)):
+            self.error_dialog.showMessage('Вы ввели недопустимые символы')
+            return 0
+
         lang = detect_language(text)
 
         if lang != 'en':  # тут с помощью Api Яндекса определяется на каком языке написан запрос
@@ -165,6 +173,14 @@ class MainWindowCore(Ui_MainWindow):
         text = ''
         text += self.lineEdit_info_ingredient.text().lower()
 
+        if text.isspace() or not text:
+            self.error_dialog.showMessage('Вы ничего не ввели')
+            return 0
+
+        if any(not c.isalnum() for c in text) or any(map(str.isdigit, text)):
+            self.error_dialog.showMessage('Вы ввели недопустимые символы')
+            return 0
+
         lang = detect_language(text)
 
         if lang != 'en':
@@ -180,7 +196,6 @@ class MainWindowCore(Ui_MainWindow):
         text += 'Fat:' + str(info_ing['Fat']['amount']) + '\n'
         text += 'Sugar:' + str(info_ing['Sugar']['amount']) + '\n'
         text += 'Protein:' + str(info_ing['Protein']['amount']) + '\n'
-
 
         self.listWidget_info_ingredients.clear()
         self.listWidget_info_ingredients.addItem(text)
