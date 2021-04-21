@@ -99,7 +99,8 @@ class Ui_Dialog(object):
         self.label_3_reg.setText(_translate("Dialog", "password"))
         self.label_4_reg.setText(_translate("Dialog", "repeat password"))
 
-    def widget_off(self):
+    def widget_off(self, dialog):
+        dialog.resize(753, 711)
         self.register_button.close()
         self.label_reg.close()
         self.nick_line.close()
@@ -110,7 +111,8 @@ class Ui_Dialog(object):
         self.label_3_reg.close()
         self.label_4_reg.close()
 
-    def widget_on(self):
+    def widget_on(self, dialog):
+        dialog.resize(380, 600)
         self.register_button.show()
         self.label_reg.show()
         self.nick_line.show()

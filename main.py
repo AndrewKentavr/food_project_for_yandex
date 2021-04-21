@@ -77,8 +77,9 @@ class MainWindowCore(Ui_MainWindow):
         self.login_window.setupUi(MainWindow)
         self.register_window.setupUi(MainWindow)
         self.setupUi(MainWindow)
-        self.register_window.widget_off()
+        self.register_window.widget_off(MainWindow)
         self.widget_off()
+        self.login_window.widget_on(MainWindow)
 
         self.login_window.auth_btn.clicked.connect(self.authorization)
         self.login_window.reg_btn.clicked.connect(self.registration_switch)
@@ -91,7 +92,7 @@ class MainWindowCore(Ui_MainWindow):
         db_sess = db_session.create_session()
         user = db_sess.query(User).filter(User.email == self.login_window.email_line.text())[0]
         if user and user.check_password(self.login_window.password_line.text()):
-            self.login_window.widget_off()
+            self.login_window.widget_off(MainWindow)
             self.widget_on()
         db_sess.close()
 
@@ -201,8 +202,8 @@ class MainWindowCore(Ui_MainWindow):
         self.listWidget_info_ingredients.addItem(text)
 
     def registration_switch(self):
-        self.login_window.widget_off()
-        self.register_window.widget_on()
+        self.login_window.widget_off(MainWindow)
+        self.register_window.widget_on(MainWindow)
 
     def registration(self):
         if len(self.register_window.nick_line.text()) <= 40:
@@ -217,8 +218,8 @@ class MainWindowCore(Ui_MainWindow):
                                 'password': self.register_window.password_register_line.text()
                             }
                             post("http://localhost:5000/api/users", json=user).json()
-                            self.register_window.widget_off()
-                            self.login_window.widget_on()
+                            self.register_window.widget_off(MainWindow)
+                            self.login_window.widget_on(MainWindow)
                         else:
                             print('пароли не совпадают')
                     else:

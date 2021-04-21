@@ -66,7 +66,8 @@ class Ui_Dialog_2(object):
         self.label_2.setText(_translate("Dialog", "email"))
         self.label_3.setText(_translate("Dialog", "password"))
 
-    def widget_off(self):
+    def widget_off(self, dialog):
+        dialog.resize(753, 711)
         self.auth_btn.close()
         self.reg_btn.close()
         self.email_line.close()
@@ -74,7 +75,8 @@ class Ui_Dialog_2(object):
         self.label_2.close()
         self.label_3.close()
 
-    def widget_on(self):
+    def widget_on(self, dialog):
+        dialog.resize(380, 450)
         self.auth_btn.show()
         self.reg_btn.show()
         self.email_line.show()
