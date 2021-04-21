@@ -8,6 +8,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
+        Dialog.resize(380, 630)
         Dialog.setStyleSheet("background: white;")
         self.nick_line = QtWidgets.QLineEdit(Dialog)
         self.nick_line.setGeometry(QtCore.QRect(20, 90, 339, 29))
