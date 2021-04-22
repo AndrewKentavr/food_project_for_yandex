@@ -22,6 +22,9 @@ class Ui_Dialog(object):
         self.register_button = QtWidgets.QPushButton(Dialog)
         self.register_button.setGeometry(QtCore.QRect(220, 530, 131, 31))
         self.register_button.setObjectName("pushButton_2")
+        self.cancel_button = QtWidgets.QPushButton(Dialog)
+        self.cancel_button.setGeometry(QtCore.QRect(20, 530, 131, 31))
+        self.cancel_button.setObjectName("pushButton_3")
         self.label_reg = QtWidgets.QLabel(Dialog)
         self.label_reg.setGeometry(QtCore.QRect(130, 40, 181, 31))
         font = QtGui.QFont()
@@ -94,6 +97,7 @@ class Ui_Dialog(object):
         _translate = QtCore.QCoreApplication.translate
         Dialog.setWindowTitle(_translate("Dialog", "Регистрация"))
         self.register_button.setText(_translate("Dialog", "Зарегестрироваться"))
+        self.cancel_button.setText(_translate("Dialog", "Вернуться"))
         self.label_reg.setText(_translate("Dialog", "nickname"))
         self.label_2_reg.setText(_translate("Dialog", "email"))
         self.label_3_reg.setText(_translate("Dialog", "password"))
@@ -102,6 +106,7 @@ class Ui_Dialog(object):
     def widget_off(self, dialog):
         dialog.resize(753, 711)
         self.register_button.close()
+        self.cancel_button.close()
         self.label_reg.close()
         self.nick_line.close()
         self.password_register_line.close()
@@ -114,6 +119,7 @@ class Ui_Dialog(object):
     def widget_on(self, dialog):
         dialog.resize(380, 600)
         self.register_button.show()
+        self.cancel_button.show()
         self.label_reg.show()
         self.nick_line.show()
         self.password_register_line.show()

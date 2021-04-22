@@ -1,9 +1,11 @@
+import json
 import parser
+
+from flask import abort, jsonify, request
+from flask_restful import Resource
 
 from . import db_session
 from .search_history import SearchData
-from flask import abort, jsonify
-from flask_restful import Resource
 
 
 def abort_if_history_not_found(history_id):
@@ -18,8 +20,25 @@ class SearchHistoryResource(Resource):
         abort_if_history_not_found(history_id)
         session = db_session.create_session()
         search_history = session.query(SearchData).get(history_id)
-        return jsonify({'history': search_history.to_dict(
-            only=('id', 'search', 'user.id'))})
+        return jsonify({'searches': search_history.to_dict(
+            only=('id', 'history', 'user_id'))})
+
+    def put(self, history_id):
+        abort_if_history_not_found(history_id)
+
+        session = db_session.create_session()
+        search_history = session.query(SearchData).get(history_id)
+
+        history = json.loads(search_history.history)
+        if request.json['title'] in history:
+            history.pop(history.index(request.json['title']))
+        history.append(request.json['title'])
+        print(history)
+
+        search_history.history = json.dumps(history)
+        session.commit()
+        session.close()
+        return jsonify({'success': 'OK'})
 
     def delete(self, history_id):
         abort_if_history_not_found(history_id)
@@ -35,13 +54,13 @@ class SearchHistoryListResource(Resource):
         session = db_session.create_session()
         histories = session.query(SearchData).all()
         return jsonify({'histories': [item.to_dict(
-            only=('id', 'search', 'user.id')) for item in histories]})
+            only=('id', 'history', 'user_id')) for item in histories]})
 
     def post(self):
         args = parser.parse_args()
         session = db_session.create_session()
         search_history = SearchData(
-            search=args['search'],
+            search=args['history'],
         )
         session.add(search_history)
         session.commit()

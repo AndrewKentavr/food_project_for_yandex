@@ -6,7 +6,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from flask import Flask
 from flask_login import LoginManager
 from flask_restful import Api
-from requests import post
+from requests import post, put
 from validate_email import validate_email
 
 from data import users_resources, db_session, calories_history_resources, search_history_resources
@@ -49,12 +49,6 @@ def index():
     return None
 
 
-@login_manager.user_loader
-def load_user(user_id):
-    db_sess = db_session.create_session()
-    return db_sess.query(User).get(user_id)
-
-
 class ApplicationThread(QtCore.QThread):
     def __init__(self, application, port=5000):
         super(ApplicationThread, self).__init__()
@@ -84,14 +78,15 @@ class MainWindowCore(Ui_MainWindow):
         self.login_window.auth_btn.clicked.connect(self.authorization)
         self.login_window.reg_btn.clicked.connect(self.registration_switch)
         self.register_window.register_button.clicked.connect(self.registration)
+        self.register_window.cancel_button.clicked.connect(self.login_switch)
         self.btn_info_recipe.clicked.connect(self.input_search_recipes)
         self.btn_random_recipe.clicked.connect(self.output_random_recipes)
         self.btn_search_ingredients.clicked.connect(self.input_search_ingredients)
 
     def authorization(self):
         db_sess = db_session.create_session()
-        user = db_sess.query(User).filter(User.email == self.login_window.email_line.text())[0]
-        if user and user.check_password(self.login_window.password_line.text()):
+        self.user = db_sess.query(User).filter(User.email == self.login_window.email_line.text())[0]
+        if self.user and self.user.check_password(self.login_window.password_line.text()):
             self.login_window.widget_off(MainWindow)
             self.widget_on()
         db_sess.close()
@@ -149,6 +144,9 @@ class MainWindowCore(Ui_MainWindow):
         self.listWidget_info_recipe_2.clear()
         self.listWidget_info_recipe_2.addItem(recipe_text)
 
+        put(f"http://localhost:5000/api/search_histories/{self.user.id}",
+            json={'title': self.lineEdit_info_recipe.text()}).json()
+
     def output_random_recipes(self):
         ran_rec = random_recipes()
 
@@ -168,6 +166,9 @@ class MainWindowCore(Ui_MainWindow):
 
         self.listWidget_random_recipe.clear()
         self.listWidget_random_recipe.addItem(text)
+
+        put(f"http://localhost:5000/api/search_histories/{self.user.id}",
+            json={'title': ran_rec[0]}).json()
 
     def input_search_ingredients(self):
 
@@ -205,6 +206,10 @@ class MainWindowCore(Ui_MainWindow):
         self.login_window.widget_off(MainWindow)
         self.register_window.widget_on(MainWindow)
 
+    def login_switch(self):
+        self.register_window.widget_off(MainWindow)
+        self.login_window.widget_on(MainWindow)
+
     def registration(self):
         if len(self.register_window.nick_line.text()) <= 40:
             if validate_email(self.register_window.email_register_line.text()):
@@ -220,16 +225,6 @@ class MainWindowCore(Ui_MainWindow):
                             post("http://localhost:5000/api/users", json=user).json()
                             self.register_window.widget_off(MainWindow)
                             self.login_window.widget_on(MainWindow)
-                        else:
-                            print('пароли не совпадают')
-                    else:
-                        print('пароль небезопасный')
-                else:
-                    print('такой пользователь существует')
-            else:
-                print('неккоректно введена электронная почта')
-        else:
-            print('длинна ник не должна превышать 40 символов')
 
     def email_in_database(self):
         db_sess = db_session.create_session()

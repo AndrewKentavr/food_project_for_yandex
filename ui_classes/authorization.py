@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from PyQt5 import QtCore, QtGui, QtWidgets
 import sys
+
+from PyQt5 import QtCore, QtGui, QtWidgets
 
 
 class Ui_Dialog_2(object):
