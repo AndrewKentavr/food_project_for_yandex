@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 # pyuic5 shit.ui -o shit.py
-import sys
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from email_validator import *
 from flask import Flask
 from flask_login import LoginManager
 from flask_restful import Api
 from requests import post, put
-from validate_email import validate_email
+from datetime import datetime
 
 from data import users_resources, db_session, calories_history_resources, search_history_resources
 from data.users import User
@@ -82,14 +82,25 @@ class MainWindowCore(Ui_MainWindow):
         self.btn_info_recipe.clicked.connect(self.input_search_recipes)
         self.btn_random_recipe.clicked.connect(self.output_random_recipes)
         self.btn_search_ingredients.clicked.connect(self.input_search_ingredients)
+        self.menu_history.triggered.connect(self.history_window)
 
     def authorization(self):
         db_sess = db_session.create_session()
-        self.user = db_sess.query(User).filter(User.email == self.login_window.email_line.text())[0]
-        if self.user and self.user.check_password(self.login_window.password_line.text()):
+        try:
+            self.user = db_sess.query(User).filter(User.email == self.login_window.email_line.text())[0]
+            assert self.user.check_password(self.login_window.password_line.text())
             self.login_window.widget_off(MainWindow)
+            self.nick_label.setText(self.user.nick_name)
             self.widget_on()
-        db_sess.close()
+        except IndexError:
+            self.login_window.error_line.setText('пароль или логин введены неккоректно')
+        except AssertionError:
+            self.login_window.error_line.setText('пароль или логин введены неккоректно')
+        finally:
+            db_sess.close()
+
+    def history_window(self):
+        self.widget_off()
 
     def input_search_recipes(self):
         # ВОТ ТУТ ХРАНИТЬСЯ НАЗВАНИЕ РЕЦЕПТА
@@ -168,7 +179,7 @@ class MainWindowCore(Ui_MainWindow):
         self.listWidget_random_recipe.addItem(text)
 
         put(f"http://localhost:5000/api/search_histories/{self.user.id}",
-            json={'title': ran_rec[0]}).json()
+            json={'title': ran_rec[0], 'date': str(datetime.now())}).json()
 
     def input_search_ingredients(self):
 
@@ -211,9 +222,9 @@ class MainWindowCore(Ui_MainWindow):
         self.login_window.widget_on(MainWindow)
 
     def registration(self):
-        if len(self.register_window.nick_line.text()) <= 40:
-            if validate_email(self.register_window.email_register_line.text()):
-                if self.email_in_database():
+        if 0 < len(self.register_window.nick_line.text()) <= 40:
+            if self.email_validate():
+                if not self.email_in_database():
                     if self.password_check():
                         if self.register_window.password_register_line.text() == \
                                 self.register_window.repeat_password_line.text():
@@ -225,16 +236,35 @@ class MainWindowCore(Ui_MainWindow):
                             post("http://localhost:5000/api/users", json=user).json()
                             self.register_window.widget_off(MainWindow)
                             self.login_window.widget_on(MainWindow)
+                        else:
+                            self.register_window.error_line.setText('пароли не совпадают')
+                    else:
+                        self.register_window.error_line.setText('пароль небезопасный')
+                else:
+                    self.register_window.error_line.setText('на такую электронную почту уже есть пользователь')
+            else:
+                self.register_window.error_line.setText('такой электронной почты не существует')
+        else:
+            self.register_window.error_line.setText('имя пользователя введено некорректно')
 
     def email_in_database(self):
         db_sess = db_session.create_session()
         try:
-            user = db_sess.query(User).get(self.register_window.email_register_line.text())
-            db_sess.close()
-            assert user
-            return False
-        except AssertionError:
+            user = db_sess.query(User).filter(User.email == self.register_window.email_register_line.text())[0]
             return True
+        except IndexError:
+            return False
+        finally:
+            db_sess.close()
+
+    def email_validate(self):
+        try:
+            validate_email(self.register_window.email_register_line.text())
+            return True
+        except EmailSyntaxError:
+            return False
+        except EmailNotValidError:
+            return False
 
     def password_check(self):
         have_digit = False

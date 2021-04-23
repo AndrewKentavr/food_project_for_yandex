@@ -16,6 +16,9 @@ class Ui_MainWindow(object):
         self.tabWidget.setGeometry(QtCore.QRect(10, 30, 731, 481))
         self.tabWidget.setObjectName("tabWidget")
 
+        self.nick_label = QtWidgets.QLabel(self.centralwidget)
+        self.nick_label.setGeometry(QtCore.QRect(500, 30, 339, 20))
+
         # ---------------------TAB 1-------------------------------------------
 
         self.tab = QtWidgets.QWidget()
@@ -171,6 +174,7 @@ class Ui_MainWindow(object):
         self.menubar.setStyleSheet("background: white; border: 2px solid #13bd4b;")
         self.menubar.setObjectName("menubar")
         self.menu_history = QtWidgets.QMenu(self.menubar)
+        self.menu_history.addAction(QtWidgets.QAction("&Open", MainWindow))
         self.menu_history.setStyleSheet("")
         self.menu_history.setObjectName("menu")
         self.menu_stat = QtWidgets.QMenu(self.menubar)
@@ -200,6 +204,7 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "window"))
+        self.nick_label.setText(_translate("MainWindow", "aaaaaaa"))
         self.tabWidget.setToolTip(_translate("MainWindow", "<html><head/><body><p><br/></p></body></html>"))
         self.btn_info_recipe.setText(_translate("MainWindow", "Посмотреть сведения о еде"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "Info Rec"))

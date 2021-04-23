@@ -30,9 +30,9 @@ class SearchHistoryResource(Resource):
         search_history = session.query(SearchData).get(history_id)
 
         history = json.loads(search_history.history)
-        if request.json['title'] in history:
+        if request.json['title'] in [element[0] for element in history]:
             history.pop(history.index(request.json['title']))
-        history.append(request.json['title'])
+        history.append((request.json['title'], request.json['date']))
         print(history)
 
         search_history.history = json.dumps(history)

@@ -9,10 +9,12 @@ class Ui_Dialog_2(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
         Dialog.resize(380, 400)
-        Dialog.setStyleSheet("background: white;")
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
+        self.error_line = QtWidgets.QLabel(Dialog)
+        self.error_line.setGeometry(QtCore.QRect(20, 280, 340, 31))
+        self.error_line.setStyleSheet("QLabel {color : red;}")
         self.auth_btn = QtWidgets.QPushButton(Dialog)
         self.auth_btn.setGeometry(QtCore.QRect(20, 320, 131, 31))
         self.auth_btn.setObjectName("pushButton")
@@ -47,6 +49,7 @@ class Ui_Dialog_2(object):
         self.email_line.setStyleSheet("background: white; border: 2px solid #13bd4b; border-radius: 8px;")
         self.email_line.setObjectName("lineEdit_5")
         self.password_line = QtWidgets.QLineEdit(Dialog)
+        self.password_line.setEchoMode(QtWidgets.QLineEdit.Password)
         self.password_line.setGeometry(QtCore.QRect(20, 230, 339, 29))
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
@@ -62,6 +65,7 @@ class Ui_Dialog_2(object):
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
         Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
+        self.error_line.setText(_translate("Dialog", ""))
         self.auth_btn.setText(_translate("Dialog", "Войти"))
         self.reg_btn.setText(_translate("Dialog", "Регистрация"))
         self.label_2.setText(_translate("Dialog", "email"))
@@ -69,6 +73,8 @@ class Ui_Dialog_2(object):
 
     def widget_off(self, dialog):
         dialog.resize(753, 711)
+        self.error_line.clear()
+        self.error_line.close()
         self.auth_btn.close()
         self.reg_btn.close()
         self.email_line.close()
@@ -78,6 +84,7 @@ class Ui_Dialog_2(object):
 
     def widget_on(self, dialog):
         dialog.resize(380, 450)
+        self.error_line.show()
         self.auth_btn.show()
         self.reg_btn.show()
         self.email_line.show()
