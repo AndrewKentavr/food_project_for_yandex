@@ -64,7 +64,7 @@ class Ui_MainWindow(object):
         self.tab_2.setObjectName("tab_2")
 
         self.btn_random_recipe = QtWidgets.QPushButton(self.tab_2)
-        self.btn_random_recipe.setGeometry(QtCore.QRect(10, 30, 281, 41))
+        self.btn_random_recipe.setGeometry(QtCore.QRect(20, 30, 281, 41))
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -80,9 +80,12 @@ class Ui_MainWindow(object):
         self.btn_random_recipe.setObjectName("pushButton_5")
 
         self.listWidget_random_recipe = QtWidgets.QListWidget(self.tab_2)
-        self.listWidget_random_recipe.setGeometry(QtCore.QRect(10, 90, 281, 161))
+        self.listWidget_random_recipe.setGeometry(QtCore.QRect(20, 90, 291, 351))
         self.listWidget_random_recipe.setObjectName("listWidget_2")
         self.tabWidget.addTab(self.tab_2, "")
+
+        self.listWidget_random_recipe_2 = QtWidgets.QListWidget(self.tab_2)
+        self.listWidget_random_recipe_2.setGeometry(QtCore.QRect(380, 280, 291, 161))
 
         self.litle_lable_2 = QtWidgets.QLabel(self.tab_2)
         self.litle_lable_2.setGeometry(QtCore.QRect(400, 40, 312, 231))

@@ -135,21 +135,17 @@ class MainWindowCore(Ui_MainWindow):
         image.loadFromData(requests.get(img_url).content)
         pixmap_0 = QtGui.QPixmap(image)
         pixmap = pixmap_0.scaled(312, 231)
-
         self.litle_lable.setPixmap(pixmap)
 
-        info_recipe = recipe_information(recipe[0])
         ingred_recipe = recipe_ingredients_id(recipe[0])
         text_ing = ''
-
         text_ing += 'Ingredients:' + '\n'
-
         for i in range(len(ingred_recipe)):
             text_ing += '-' + str(ingred_recipe[i]) + '\n'
 
+        info_recipe = recipe_information(recipe[0])
         recipe_text = ''
         recipe_text += 'Info:' + '\n'
-
         recipe_text += '-' + info_recipe[0] + '\n'
         recipe_text += '-' + info_recipe[1] + '\n'
         recipe_text += '-' + info_recipe[2] + '\n'
@@ -166,22 +162,31 @@ class MainWindowCore(Ui_MainWindow):
     def output_random_recipes(self):
         ran_rec = random_recipes()
 
-        text = ''
-        text += '----- ' + ran_rec[0] + ' -----\n'
-        text += ran_rec[2] + '\n'
-        text += ran_rec[3] + '\n'
-        text += ran_rec[4] + '\n'
+        ingred_random_recipe = recipe_ingredients_id(ran_rec[5])
+
+        text_ing = ''
+        text_ing += 'Ingredients:' + '\n'
+        for i in range(len(ingred_random_recipe)):
+            text_ing += '-' + str(ingred_random_recipe[i]) + '\n'
+
+        text_inf = ''
+        text_inf += '----- ' + ran_rec[0] + ' -----\n'
+        text_inf += 'Info:' + '\n'
+        text_inf += ran_rec[2] + '\n'
+        text_inf += ran_rec[3] + '\n'
+        text_inf += ran_rec[4] + '\n'
 
         image = QtGui.QImage()
         image.loadFromData(requests.get(ran_rec[1]).content)
-
         pixmap_0 = QtGui.QPixmap(image)
         pixmap = pixmap_0.scaled(312, 231)
-
         self.litle_lable_2.setPixmap(pixmap)
 
         self.listWidget_random_recipe.clear()
-        self.listWidget_random_recipe.addItem(text)
+        self.listWidget_random_recipe.addItem(text_ing)
+
+        self.listWidget_random_recipe_2.clear()
+        self.listWidget_random_recipe_2.addItem(text_inf)
 
         put(f"http://localhost:5000/api/search_histories/{self.user.id}",
             json={'title': ran_rec[0], 'date': str(datetime.now())}).json()

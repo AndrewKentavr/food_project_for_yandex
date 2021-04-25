@@ -60,6 +60,7 @@ def random_recipes():
         assert response
         json_response = response.json()
         try:
+            print(json_response['recipes'])
             name = json_response['recipes'][0]['title']
             image = json_response['recipes'][0]['image']
             summary = json_response['recipes'][0]['summary']
@@ -70,9 +71,9 @@ def random_recipes():
             cal = cc[num].split('</b>')[0]
             prot = cc[num + 1].split('</b>')[0]
             fat = cc[num + 2].split('</b>')[0]
-            print([name, image, cal, prot, fat])
 
-            return [name, image, cal, prot, fat]
+            id = json_response['recipes'][0]['id']
+            return [name, image, cal, prot, fat, id]
         except IndexError:
             print("IndexError")
             return "IndexError"
