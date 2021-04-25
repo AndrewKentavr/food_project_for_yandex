@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 # pyuic5 shit.ui -o shit.py
 
+import sys
+
 from PyQt5 import QtCore, QtGui, QtWidgets
 from email_validator import *
 from flask import Flask
@@ -16,6 +18,9 @@ from translator_func import *
 from ui_classes.authorization import Ui_Dialog_2
 from ui_classes.main_windowUI import Ui_MainWindow
 from ui_classes.registration import Ui_Dialog
+
+from ui_classes.history import Ui_Dialog_history
+
 
 
 def my_excepthook(type, value, tback):
