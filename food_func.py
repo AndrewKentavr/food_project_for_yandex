@@ -157,6 +157,9 @@ def ingredient_information(id):
                 elif "Protein" == nutrients[i]['name']:
                     info["Protein"] = nutrients[i]
 
+                else:
+                    info[nutrients[i]['name']] = nutrients[i]
+            print(info)
             return info
         except IndexError:
             print("IndexError")

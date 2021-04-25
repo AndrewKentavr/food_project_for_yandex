@@ -215,13 +215,36 @@ class MainWindowCore(Ui_MainWindow):
 
         text = ''
         text += 'Name -- ' + str(ingredient[1]) + '\n'
-        text += 'Calories:' + str(info_ing['Calories']['amount']) + '\n'
-        text += 'Fat:' + str(info_ing['Fat']['amount']) + '\n'
-        text += 'Sugar:' + str(info_ing['Sugar']['amount']) + '\n'
-        text += 'Protein:' + str(info_ing['Protein']['amount']) + '\n'
+        text += 'Calories: ' + str(info_ing['Calories']['amount']) + '\n'
+        text += 'Fat: ' + str(info_ing['Fat']['amount']) + '\n'
+        text += 'Sugar: ' + str(info_ing['Sugar']['amount']) + '\n'
+        text += 'Protein: ' + str(info_ing['Protein']['amount']) + '\n'
+
+        text_2 = ''
+        text_3 = ''
+
+        count = 0
+        for i in info_ing:
+            if i == 'Calories' or i == 'Fat' or i == 'Sugar' or i == 'Protein':
+                continue
+            else:
+                if count < 17:
+                    text_2 += i + ': ' + str(info_ing[i]['amount']) + '\n'
+                else:
+                    text_3 += i + ': ' + str(info_ing[i]['amount']) + '\n'
+
+            count += 1
+
+
 
         self.listWidget_info_ingredients.clear()
         self.listWidget_info_ingredients.addItem(text)
+
+        self.listWidget_info_ingredients_2.clear()
+        self.listWidget_info_ingredients_2.addItem(text_2)
+
+        self.listWidget_info_ingredients_3.clear()
+        self.listWidget_info_ingredients_3.addItem(text_3)
 
     def registration_switch(self):
         self.login_window.widget_off(MainWindow)

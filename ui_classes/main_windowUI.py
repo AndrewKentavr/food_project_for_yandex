@@ -153,9 +153,9 @@ class Ui_MainWindow(object):
         self.btn_search_ingredients.setStyleSheet("background: white; border: 2px solid #13bd4b;")
         self.btn_search_ingredients.setObjectName("pushButton_2")
 
-        self.listWidget_info_ingredients = QtWidgets.QListWidget(self.tab_4)
-        self.listWidget_info_ingredients.setGeometry(QtCore.QRect(390, 60, 291, 381))
-        self.listWidget_info_ingredients.setObjectName("listWidget_5")
+        self.listWidget_info_ingredients_2 = QtWidgets.QListWidget(self.tab_4)
+        self.listWidget_info_ingredients_2.setGeometry(QtCore.QRect(350, 0, 170, 441))
+        self.listWidget_info_ingredients_2.setObjectName("listWidget_5")
 
         self.lineEdit_info_ingredient = QtWidgets.QLineEdit(self.tab_4)
         self.lineEdit_info_ingredient.setGeometry(QtCore.QRect(20, 20, 281, 31))
@@ -163,11 +163,12 @@ class Ui_MainWindow(object):
         self.lineEdit_info_ingredient.setText("")
         self.lineEdit_info_ingredient.setObjectName("lineEdit_2")
 
-        self.listWidget_info_ingredients_2 = QtWidgets.QListWidget(self.tab_4)
-        self.listWidget_info_ingredients_2.setGeometry(QtCore.QRect(20, 130, 311, 201))
-        self.listWidget_info_ingredients_2.setObjectName("listWidget_6")
+        self.listWidget_info_ingredients = QtWidgets.QListWidget(self.tab_4)
+        self.listWidget_info_ingredients.setGeometry(QtCore.QRect(20, 130, 311, 201))
+        self.listWidget_info_ingredients.setObjectName("listWidget_6")
+
         self.listWidget_info_ingredients_3 = QtWidgets.QListWidget(self.tab_4)
-        self.listWidget_info_ingredients_3.setGeometry(QtCore.QRect(20, 340, 311, 101))
+        self.listWidget_info_ingredients_3.setGeometry(QtCore.QRect(530, 0, 170, 441))
         self.listWidget_info_ingredients_3.setObjectName("listWidget_7")
         self.tabWidget.addTab(self.tab_4, "")
         MainWindow.setCentralWidget(self.centralwidget)
