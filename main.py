@@ -1,26 +1,23 @@
 # -*- coding: utf-8 -*-
 # pyuic5 shit.ui -o shit.py
 
-import sys
+from datetime import datetime
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from email_validator import *
 from flask import Flask
 from flask_login import LoginManager
 from flask_restful import Api
-from requests import post, put
-from datetime import datetime
+from requests import post, put, get
 
 from data import users_resources, db_session, calories_history_resources, search_history_resources
 from data.users import User
 from food_func import *
 from translator_func import *
 from ui_classes.authorization import Ui_Dialog_2
+from ui_classes.history import Ui_Dialog_history
 from ui_classes.main_windowUI import Ui_MainWindow
 from ui_classes.registration import Ui_Dialog
-
-from ui_classes.history import Ui_Dialog_history
-
 
 
 def my_excepthook(type, value, tback):
@@ -70,33 +67,44 @@ class ApplicationThread(QtCore.QThread):
 class MainWindowCore(Ui_MainWindow):
     def __init__(self):
         self.user = None
+        self.history = None
         self.login_window = Ui_Dialog_2()
         self.register_window = Ui_Dialog()
+        self.history_window = Ui_Dialog_history()
 
         self.login_window.setupUi(MainWindow)
         self.register_window.setupUi(MainWindow)
+        self.history_window.setupUi(MainWindow)
         self.setupUi(MainWindow)
-        self.register_window.widget_off(MainWindow)
+        self.register_window.widget_off()
+        self.history_window.widget_off()
         self.widget_off()
         self.login_window.widget_on(MainWindow)
 
         self.login_window.auth_btn.clicked.connect(self.authorization)
         self.login_window.reg_btn.clicked.connect(self.registration_switch)
+
         self.register_window.register_button.clicked.connect(self.registration)
         self.register_window.cancel_button.clicked.connect(self.login_switch)
+
+        self.menu_history.triggered.connect(self.main_history_switch)
+        self.history_window.btn_clear_all.clicked.connect(self.history_clear)
+        self.history_window.btn_exit.clicked.connect(self.history_main_switch)
+
         self.btn_info_recipe.clicked.connect(self.input_search_recipes)
         self.btn_random_recipe.clicked.connect(self.output_random_recipes)
         self.btn_search_ingredients.clicked.connect(self.input_search_ingredients)
-        self.menu_history.triggered.connect(self.history_window)
 
     def authorization(self):
         db_sess = db_session.create_session()
         try:
             self.user = db_sess.query(User).filter(User.email == self.login_window.email_line.text())[0]
             assert self.user.check_password(self.login_window.password_line.text())
-            self.login_window.widget_off(MainWindow)
+            self.login_window.widget_off()
             self.nick_label.setText(self.user.nick_name)
-            self.widget_on()
+            self.history = get(f"http://localhost:5000/api/search_histories/{self.user.id}").json() \
+                ['searches']['history']
+            self.widget_on(MainWindow)
         except IndexError:
             self.login_window.error_line.setText('пароль или логин введены неккоректно')
         except AssertionError:
@@ -104,23 +112,65 @@ class MainWindowCore(Ui_MainWindow):
         finally:
             db_sess.close()
 
-    def history_window(self):
+    def registration_switch(self):
+        self.login_window.widget_off()
+        self.register_window.widget_on(MainWindow)
+
+    def registration(self):
+        if 0 < len(self.register_window.nick_line.text()) <= 40:
+            if self.email_validate():
+                if not self.email_in_database():
+                    if self.password_check():
+                        if self.register_window.password_register_line.text() == \
+                                self.register_window.repeat_password_line.text():
+                            user = {
+                                'nick_name': self.register_window.nick_line.text(),
+                                'email': self.register_window.email_register_line.text(),
+                                'password': self.register_window.password_register_line.text()
+                            }
+                            post("http://localhost:5000/api/users", json=user).json()
+                            self.register_window.widget_off()
+                            self.login_window.widget_on(MainWindow)
+                        else:
+                            self.register_window.error_line.setText('пароли не совпадают')
+                    else:
+                        self.register_window.error_line.setText('пароль небезопасный')
+                else:
+                    self.register_window.error_line.setText('на такую электронную почту уже есть пользователь')
+            else:
+                self.register_window.error_line.setText('такой электронной почты не существует')
+        else:
+            self.register_window.error_line.setText('имя пользователя введено некорректно')
+
+    def login_switch(self):
+        self.register_window.widget_off()
+        self.login_window.widget_on(MainWindow)
+
+    def main_history_switch(self):
         self.widget_off()
+        self.history_window.widget_on(MainWindow, self.history)
+
+    def history_clear(self):
+        model = QtGui.QStandardItemModel()
+        self.history_window.list_history.setModel(model)
+        put(f"http://localhost:5000/api/search_histories/{self.user.id}",
+            json={'title': 'NULL', 'date': str(datetime.now())}).json()
+
+    def history_main_switch(self):
+        self.history_window.widget_off()
+        self.widget_on(MainWindow)
 
     def input_search_recipes(self):
-        # ВОТ ТУТ ХРАНИТЬСЯ НАЗВАНИЕ РЕЦЕПТА
-        # Например: Яичница
-
         text = ''
         text += self.lineEdit_info_recipe.text().lower()
 
         if text.isspace() or not text:
             self.error_dialog.showMessage('Вы ничего не ввели')
-            return 0
+            return False
 
         if any(not c.isalnum() for c in text) or any(map(str.isdigit, text)):
             self.error_dialog.showMessage('Вы ввели недопустимые символы')
-            return 0
+            return False
 
         lang = detect_language(text)
 
@@ -157,7 +207,9 @@ class MainWindowCore(Ui_MainWindow):
         self.listWidget_info_recipe_2.addItem(recipe_text)
 
         put(f"http://localhost:5000/api/search_histories/{self.user.id}",
-            json={'title': self.lineEdit_info_recipe.text()}).json()
+            json={'title': self.lineEdit_info_recipe.text(), 'date': str(datetime.now())}).json()
+        self.history = get(f"http://localhost:5000/api/search_histories/{self.user.id}").json() \
+            ['searches']['history']
 
     def output_random_recipes(self):
         ran_rec = random_recipes()
@@ -190,6 +242,8 @@ class MainWindowCore(Ui_MainWindow):
 
         put(f"http://localhost:5000/api/search_histories/{self.user.id}",
             json={'title': ran_rec[0], 'date': str(datetime.now())}).json()
+        self.history = get(f"http://localhost:5000/api/search_histories/{self.user.id}").json() \
+            ['searches']['history']
 
     def input_search_ingredients(self):
 
@@ -240,45 +294,10 @@ class MainWindowCore(Ui_MainWindow):
         self.listWidget_info_ingredients.clear()
         self.listWidget_info_ingredients.addItem(text)
 
-        self.listWidget_info_ingredients_2.clear()
-        self.listWidget_info_ingredients_2.addItem(text_2)
-
-        self.listWidget_info_ingredients_3.clear()
-        self.listWidget_info_ingredients_3.addItem(text_3)
-
-    def registration_switch(self):
-        self.login_window.widget_off(MainWindow)
-        self.register_window.widget_on(MainWindow)
-
-    def login_switch(self):
-        self.register_window.widget_off(MainWindow)
-        self.login_window.widget_on(MainWindow)
-
-    def registration(self):
-        if 0 < len(self.register_window.nick_line.text()) <= 40:
-            if self.email_validate():
-                if not self.email_in_database():
-                    if self.password_check():
-                        if self.register_window.password_register_line.text() == \
-                                self.register_window.repeat_password_line.text():
-                            user = {
-                                'nick_name': self.register_window.nick_line.text(),
-                                'email': self.register_window.email_register_line.text(),
-                                'password': self.register_window.password_register_line.text()
-                            }
-                            post("http://localhost:5000/api/users", json=user).json()
-                            self.register_window.widget_off(MainWindow)
-                            self.login_window.widget_on(MainWindow)
-                        else:
-                            self.register_window.error_line.setText('пароли не совпадают')
-                    else:
-                        self.register_window.error_line.setText('пароль небезопасный')
-                else:
-                    self.register_window.error_line.setText('на такую электронную почту уже есть пользователь')
-            else:
-                self.register_window.error_line.setText('такой электронной почты не существует')
-        else:
-            self.register_window.error_line.setText('имя пользователя введено некорректно')
+        put(f"http://localhost:5000/api/search_histories/{self.user.id}",
+            json={'title': ingredient[1], 'date': str(datetime.now())}).json()
+        self.history = get(f"http://localhost:5000/api/search_histories/{self.user.id}").json() \
+            ['searches']['history']
 
     def email_in_database(self):
         db_sess = db_session.create_session()

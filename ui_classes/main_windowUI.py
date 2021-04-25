@@ -198,7 +198,8 @@ class Ui_MainWindow(object):
         self.centralwidget.close()
         self.menubar.close()
 
-    def widget_on(self):
+    def widget_on(self, window):
+        window.resize(753, 711)
         self.centralwidget.show()
         self.menubar.show()
 

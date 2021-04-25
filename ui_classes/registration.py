@@ -7,8 +7,6 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
-        Dialog.setObjectName("Dialog")
-        Dialog.resize(380, 630)
         self.nick_line = QtWidgets.QLineEdit(Dialog)
         self.nick_line.setGeometry(QtCore.QRect(20, 90, 339, 29))
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
@@ -108,8 +106,7 @@ class Ui_Dialog(object):
         self.label_3_reg.setText(_translate("Dialog", "password"))
         self.label_4_reg.setText(_translate("Dialog", "repeat password"))
 
-    def widget_off(self, dialog):
-        dialog.resize(753, 711)
+    def widget_off(self):
         self.error_line.close()
         self.error_line.clear()
         self.register_button.close()

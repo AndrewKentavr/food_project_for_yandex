@@ -33,7 +33,8 @@ class SearchHistoryResource(Resource):
         if request.json['title'] in [element[0] for element in history]:
             history.pop(history.index(request.json['title']))
         history.append((request.json['title'], request.json['date']))
-        print(history)
+        if request.json['title'] == 'NULL':
+            history.clear()
 
         search_history.history = json.dumps(history)
         session.commit()
