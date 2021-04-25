@@ -177,14 +177,11 @@ class Ui_MainWindow(object):
         self.menu_history.addAction(QtWidgets.QAction("&Open", MainWindow))
         self.menu_history.setStyleSheet("")
         self.menu_history.setObjectName("menu")
-        self.menu_stat = QtWidgets.QMenu(self.menubar)
-        self.menu_stat.setObjectName("menu_2")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
         self.menubar.addAction(self.menu_history.menuAction())
-        self.menubar.addAction(self.menu_stat.menuAction())
 
         self.retranslateUi(MainWindow)
         self.tabWidget.setCurrentIndex(0)
@@ -215,7 +212,6 @@ class Ui_MainWindow(object):
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_3), _translate("MainWindow", "Calor"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_4), _translate("MainWindow", "Info Ing"))
         self.menu_history.setTitle(_translate("MainWindow", "История поиска"))
-        self.menu_stat.setTitle(_translate("MainWindow", "Статистика"))
         self.btn_search_ingredients.setText(_translate("MainWindow", "Посмотреть сведения об ингридиенте"))
 
 
