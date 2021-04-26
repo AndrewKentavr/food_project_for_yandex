@@ -15,11 +15,22 @@ def abort_if_user_not_found(user_id):
 
 class UserResource(Resource):
     def get(self, user_id):
-        abort_if_user_not_found(user_id)
-        session = db_session.create_session()
-        user = session.query(User).get(user_id)
-        return jsonify({'user': user.to_dict(
-            only=('id', 'nick_name', 'email'))})
+        if request.json:
+            try:
+                session = db_session.create_session()
+                user = session.query(User).filter(User.email == request.json['email'])[0]
+                return jsonify({'user': user.to_dict(
+                    only=('id', 'nick_name', 'email', 'hashed_password'))})
+            except IndexError:
+                return jsonify({'error': 'not found'})
+            except KeyError:
+                return jsonify({'error': 'bad request'})
+        else:
+            abort_if_user_not_found(user_id)
+            session = db_session.create_session()
+            user = session.query(User).get(user_id)
+            return jsonify({'user': user.to_dict(
+                only=('id', 'nick_name', 'email', 'hashed_password'))})
 
     def delete(self, user_id):
         abort_if_user_not_found(user_id)
@@ -35,7 +46,7 @@ class UserListResource(Resource):
         session = db_session.create_session()
         news = session.query(User).all()
         return jsonify({'users': [item.to_dict(
-            only=('nick_name', 'email', 'id')) for item in news]})
+            only=('nick_name', 'email', 'id', 'hashed_password')) for item in news]})
 
     def post(self):
         session = db_session.create_session()

@@ -6,6 +6,7 @@ from datetime import datetime
 from PyQt5 import QtCore, QtGui, QtWidgets
 from email_validator import *
 from requests import post, put, get
+from werkzeug.security import check_password_hash
 
 from data import db_session
 from data.users import User
@@ -77,21 +78,24 @@ class MainWindowCore(Ui_MainWindow):
     # если данные введены корректно, то программа получает самого пользователя и его историю
     # а также сменяется интерфейс на интерфейс основного окна
     def authorization(self):
-        db_sess = db_session.create_session()
+        user_email = {'email': self.login_window.email_line.text()}
         try:
-            self.user = db_sess.query(User).filter(User.email == self.login_window.email_line.text())[0]
-            assert self.user.check_password(self.login_window.password_line.text())
+            self.user = get("http://localhost:5000/api/users/0", json=user_email).json()
+            assert self.user != {'error': 'not found'}
+            user_hash = self.user['user']['hashed_password']
+            assert check_password_hash(user_hash, self.login_window.password_line.text())
             self.login_window.widget_off()
-            self.nick_label.setText(self.user.nick_name)
-            self.history = get(f"http://localhost:5000/api/search_histories/{self.user.id}").json() \
+            self.nick_label.setText(self.user['user']['nick_name'])
+            self.history = get(f"http://localhost:5000/api/search_histories/{self.user['user']['id']}").json() \
                 ['searches']['history']
+            self.user['user']['hashed_password'] = None
             self.widget_on(MainWindow)
         except IndexError:
             self.login_window.error_line.setText('пароль или логин введены неккоректно')
         except AssertionError:
             self.login_window.error_line.setText('пароль или логин введены неккоректно')
         finally:
-            db_sess.close()
+            pass
 
     # метод смены интерфейса
     def registration_switch(self):
@@ -194,9 +198,9 @@ class MainWindowCore(Ui_MainWindow):
         self.listWidget_info_recipe_2.clear()
         self.listWidget_info_recipe_2.addItem(recipe_text)
 
-        put(f"http://localhost:5000/api/search_histories/{self.user.id}",
+        put(f"http://localhost:5000/api/search_histories/{self.user['user']['id']}",
             json={'title': self.lineEdit_info_recipe.text(), 'date': str(datetime.now())}).json()
-        self.history = get(f"http://localhost:5000/api/search_histories/{self.user.id}").json() \
+        self.history = get(f"http://localhost:5000/api/search_histories/{self.user['user']['id']}").json() \
             ['searches']['history']
 
     def output_random_recipes(self):
@@ -228,9 +232,9 @@ class MainWindowCore(Ui_MainWindow):
         self.listWidget_random_recipe_2.clear()
         self.listWidget_random_recipe_2.addItem(text_inf)
 
-        put(f"http://localhost:5000/api/search_histories/{self.user.id}",
+        put(f"http://localhost:5000/api/search_histories/{self.user['user']['id']}",
             json={'title': ran_rec[0], 'date': str(datetime.now())}).json()
-        self.history = get(f"http://localhost:5000/api/search_histories/{self.user.id}").json() \
+        self.history = get(f"http://localhost:5000/api/search_histories/{self.user['user']['id']}").json() \
             ['searches']['history']
 
     def input_search_ingredients(self):
@@ -280,21 +284,20 @@ class MainWindowCore(Ui_MainWindow):
         self.listWidget_info_ingredients.clear()
         self.listWidget_info_ingredients.addItem(text)
 
-        put(f"http://localhost:5000/api/search_histories/{self.user.id}",
+        put(f"http://localhost:5000/api/search_histories/{self.user['user']['id']}",
             json={'title': ingredient[1], 'date': str(datetime.now())}).json()
-        self.history = get(f"http://localhost:5000/api/search_histories/{self.user.id}").json() \
+        self.history = get(f"http://localhost:5000/api/search_histories/{self.user['user']['id']}").json() \
             ['searches']['history']
 
     # метод проверки пользователя в базе данных для функции регистрации
     def email_in_database(self):
-        db_sess = db_session.create_session()
+        email = {'email': self.register_window.password_register_line.text()}
         try:
-            user = db_sess.query(User).filter(User.email == self.register_window.email_register_line.text())[0]
+            user = get("http://localhost:5000/api/users/0", json=email).json()
+            assert user != {'error': 'not found'}
             return True
-        except IndexError:
+        except AssertionError:
             return False
-        finally:
-            db_sess.close()
 
     # метод на корректность адресса электронной почты
     def email_validate(self):
@@ -325,6 +328,7 @@ class MainWindowCore(Ui_MainWindow):
 
 
 if __name__ == '__main__':
+    print(db_session.__factory)
     app_window = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
     ex = MainWindowCore()
