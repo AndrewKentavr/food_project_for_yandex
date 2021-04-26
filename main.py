@@ -289,8 +289,6 @@ class MainWindowCore(Ui_MainWindow):
 
             count += 1
 
-
-
         self.listWidget_info_ingredients.clear()
         self.listWidget_info_ingredients.addItem(text)
 
