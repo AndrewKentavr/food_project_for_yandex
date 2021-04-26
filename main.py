@@ -9,7 +9,6 @@ from requests import post, put, get
 from werkzeug.security import check_password_hash
 
 from data import db_session
-from data.users import User
 from food_func import *
 from translator_func import *
 from ui_classes.authorization import Ui_Dialog_2
