@@ -22,7 +22,6 @@ from ui_classes.registration import Ui_Dialog
 from ui_classes.history import Ui_Dialog_history
 
 
-
 def my_excepthook(type, value, tback):
     QtWidgets.QMessageBox.critical(
         window, "CRITICAL ERROR", str(value),
@@ -234,8 +233,6 @@ class MainWindowCore(Ui_MainWindow):
                     text_3 += i + ': ' + str(info_ing[i]['amount']) + '\n'
 
             count += 1
-
-
 
         self.listWidget_info_ingredients.clear()
         self.listWidget_info_ingredients.addItem(text)
