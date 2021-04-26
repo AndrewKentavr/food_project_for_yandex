@@ -1,4 +1,6 @@
+import logging
 import os
+import sys
 
 from flask import Flask
 from flask_restful import Api
@@ -15,6 +17,9 @@ api.add_resource(search_history_resources.SearchHistoryListResource, '/api/searc
 api.add_resource(search_history_resources.SearchHistoryResource, '/api/search_histories/<int:history_id>')
 
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
+
+app.logger.addHandler(logging.StreamHandler(sys.stdout))
+app.logger.setLevel(logging.ERROR)
 
 
 @app.route('/')
