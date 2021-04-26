@@ -10,7 +10,7 @@ from flask_login import LoginManager
 from flask_restful import Api
 from requests import post, put, get
 
-from data import users_resources, db_session, calories_history_resources, search_history_resources
+from data import users_resources, db_session, search_history_resources
 from data.users import User
 from food_func import *
 from translator_func import *
@@ -38,8 +38,6 @@ api.add_resource(users_resources.UserListResource, '/api/users')
 api.add_resource(users_resources.UserResource, '/api/users/<int:user_id>')
 api.add_resource(search_history_resources.SearchHistoryListResource, '/api/search_histories')
 api.add_resource(search_history_resources.SearchHistoryResource, '/api/search_histories/<int:history_id>')
-api.add_resource(calories_history_resources.CaloriesHistoryListResource, '/api/search_histories')
-api.add_resource(calories_history_resources.CaloriesHistoryResource, '/api/search_histories/<int:history_id>')
 
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 login_manager = LoginManager()
@@ -66,12 +64,12 @@ class ApplicationThread(QtCore.QThread):
 
 class MainWindowCore(Ui_MainWindow):
     def __init__(self):
+        # инициализация переменных для пользователя и его истории, а также инициализация всех окон для приложения
         self.user = None
         self.history = None
         self.login_window = Ui_Dialog_2()
         self.register_window = Ui_Dialog()
         self.history_window = Ui_Dialog_history()
-
         self.login_window.setupUi(MainWindow)
         self.register_window.setupUi(MainWindow)
         self.history_window.setupUi(MainWindow)
@@ -80,21 +78,24 @@ class MainWindowCore(Ui_MainWindow):
         self.history_window.widget_off()
         self.widget_off()
         self.login_window.widget_on(MainWindow)
-
+        # сигналы для окна авторизации
         self.login_window.auth_btn.clicked.connect(self.authorization)
         self.login_window.reg_btn.clicked.connect(self.registration_switch)
-
+        # сигналы для окна регистрации
         self.register_window.register_button.clicked.connect(self.registration)
         self.register_window.cancel_button.clicked.connect(self.login_switch)
-
+        # сигналы для окна с историей
         self.menu_history.triggered.connect(self.main_history_switch)
         self.history_window.btn_clear_all.clicked.connect(self.history_clear)
         self.history_window.btn_exit.clicked.connect(self.history_main_switch)
-
+        #  сигналы для главного функционала программы
         self.btn_info_recipe.clicked.connect(self.input_search_recipes)
         self.btn_random_recipe.clicked.connect(self.output_random_recipes)
         self.btn_search_ingredients.clicked.connect(self.input_search_ingredients)
 
+    # метод производит поиск пользователя в базе данных
+    # если данные введены корректно, то программа получает самого пользователя и его историю
+    # а также сменяется интерфейс на интерфейс основного окна
     def authorization(self):
         db_sess = db_session.create_session()
         try:
@@ -112,10 +113,13 @@ class MainWindowCore(Ui_MainWindow):
         finally:
             db_sess.close()
 
+    # метод смены интерфейса
     def registration_switch(self):
         self.login_window.widget_off()
         self.register_window.widget_on(MainWindow)
 
+    # метод для регистрации пользователя
+    # если введённые данные проходят проверку, то создаётся новй пользователь вместе с его историей поиска
     def registration(self):
         if 0 < len(self.register_window.nick_line.text()) <= 40:
             if self.email_validate():
@@ -142,20 +146,24 @@ class MainWindowCore(Ui_MainWindow):
         else:
             self.register_window.error_line.setText('имя пользователя введено некорректно')
 
+    # метод смены интерфейса
     def login_switch(self):
         self.register_window.widget_off()
         self.login_window.widget_on(MainWindow)
 
+    # метод смены интерфейса
     def main_history_switch(self):
         self.widget_off()
         self.history_window.widget_on(MainWindow, self.history)
 
+    # метод сброса истории поиска
     def history_clear(self):
         model = QtGui.QStandardItemModel()
         self.history_window.list_history.setModel(model)
         put(f"http://localhost:5000/api/search_histories/{self.user.id}",
             json={'title': 'NULL', 'date': str(datetime.now())}).json()
 
+    # метод смены интерфейса
     def history_main_switch(self):
         self.history_window.widget_off()
         self.widget_on(MainWindow)
@@ -297,6 +305,7 @@ class MainWindowCore(Ui_MainWindow):
         self.history = get(f"http://localhost:5000/api/search_histories/{self.user.id}").json() \
             ['searches']['history']
 
+    # метод проверки пользователя в базе данных для функции регистрации
     def email_in_database(self):
         db_sess = db_session.create_session()
         try:
@@ -307,6 +316,7 @@ class MainWindowCore(Ui_MainWindow):
         finally:
             db_sess.close()
 
+    # метод на корректность адресса электронной почты
     def email_validate(self):
         try:
             validate_email(self.register_window.email_register_line.text())
@@ -316,6 +326,7 @@ class MainWindowCore(Ui_MainWindow):
         except EmailNotValidError:
             return False
 
+    # метод на проверку безопасности пароля
     def password_check(self):
         have_digit = False
         have_letter = False

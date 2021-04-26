@@ -1,7 +1,6 @@
 from flask import abort, jsonify, request
 from flask_restful import Resource
 
-from data.calories_history import CaloriesData
 from data.search_history import SearchData
 from . import db_session
 from .users import User
@@ -47,8 +46,6 @@ class UserListResource(Resource):
         session.commit()
 
         search_history = SearchData(user_id=user.id, history='[]')
-        calories_history = CaloriesData(user_id=user.id, calories='[]')
-        session.add(calories_history)
         session.add(search_history)
         session.commit()
 

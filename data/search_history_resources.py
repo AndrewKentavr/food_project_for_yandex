@@ -30,8 +30,11 @@ class SearchHistoryResource(Resource):
         search_history = session.query(SearchData).get(history_id)
 
         history = json.loads(search_history.history)
-        if request.json['title'] in [element[0] for element in history]:
-            history.pop(history.index(request.json['title']))
+        try:
+            index = [element[0] for element in history].index(request.json['title'])
+            history.pop(index)
+        except ValueError:
+            pass
         history.append((request.json['title'], request.json['date']))
         if request.json['title'] == 'NULL':
             history.clear()

@@ -5,6 +5,7 @@ import sys
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
+# класс окна регистрации
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         self.nick_line = QtWidgets.QLineEdit(Dialog)

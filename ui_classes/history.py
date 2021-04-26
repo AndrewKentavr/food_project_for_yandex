@@ -13,6 +13,7 @@ import sys
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
+# класс интерфйеса для окна истории поиска
 class Ui_Dialog_history(object):
     def setupUi(self, Dialog):
         self.list_history = QtWidgets.QListView(Dialog)

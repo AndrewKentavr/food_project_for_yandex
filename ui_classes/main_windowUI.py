@@ -1,7 +1,9 @@
-from PyQt5 import QtCore, QtWidgets, QtGui
 import sys
 
+from PyQt5 import QtCore, QtWidgets, QtGui
 
+
+# класс интерфейса для основного окна
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -93,51 +95,8 @@ class Ui_MainWindow(object):
         # ---------------------TAB 3-------------------------------------------
 
         self.tab_3 = QtWidgets.QWidget()
-        self.tab_3.setObjectName("tab_3")
-        self.lineEdit_calor_for_day = QtWidgets.QLineEdit(self.tab_3)
-        self.lineEdit_calor_for_day.setGeometry(QtCore.QRect(10, 210, 281, 31))
-        self.lineEdit_calor_for_day.setStyleSheet("background: white; border: 2px solid #13bd4b;")
-        self.lineEdit_calor_for_day.setText("")
-        self.lineEdit_calor_for_day.setObjectName("lineEdit_3")
-        self.btn_cal_for_day = QtWidgets.QPushButton(self.tab_3)
-        self.btn_cal_for_day.setGeometry(QtCore.QRect(10, 170, 241, 31))
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.btn_cal_for_day.sizePolicy().hasHeightForWidth())
-        self.btn_cal_for_day.setSizePolicy(sizePolicy)
-        font = QtGui.QFont()
-        font.setFamily("Bahnschrift")
-        font.setPointSize(10)
-        font.setBold(True)
-        font.setWeight(75)
-        self.btn_cal_for_day.setFont(font)
-        self.btn_cal_for_day.setStyleSheet("background: white; border: 2px solid #13bd4b;")
-        self.btn_cal_for_day.setObjectName("pushButton_7")
-        self.label_calories = QtWidgets.QLabel(self.tab_3)
-        self.label_calories.setGeometry(QtCore.QRect(10, 30, 211, 51))
-        font = QtGui.QFont()
-        font.setFamily("Segoe UI")
-        font.setPointSize(10)
-        font.setBold(True)
-        font.setItalic(False)
-        font.setUnderline(False)
-        font.setWeight(75)
-        font.setStrikeOut(False)
-        font.setStyleStrategy(QtGui.QFont.PreferDefault)
-        self.label_calories.setFont(font)
-        self.label_calories.setLayoutDirection(QtCore.Qt.LeftToRight)
-        self.label_calories.setAutoFillBackground(False)
-        self.label_calories.setStyleSheet("background: white; border: 2px solid #13bd4b;")
-        self.label_calories.setWordWrap(False)
-        self.label_calories.setObjectName("label")
-        self.tabWidget.addTab(self.tab_3, "")
-
-        # ---------------------TAB 4-------------------------------------------
-
-        self.tab_4 = QtWidgets.QWidget()
-        self.tab_4.setObjectName("tab_4")
-        self.btn_search_ingredients = QtWidgets.QPushButton(self.tab_4)
+        self.tab_3.setObjectName("tab_4")
+        self.btn_search_ingredients = QtWidgets.QPushButton(self.tab_3)
         self.btn_search_ingredients.setGeometry(QtCore.QRect(20, 70, 311, 41))
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
@@ -153,24 +112,24 @@ class Ui_MainWindow(object):
         self.btn_search_ingredients.setStyleSheet("background: white; border: 2px solid #13bd4b;")
         self.btn_search_ingredients.setObjectName("pushButton_2")
 
-        self.listWidget_info_ingredients_2 = QtWidgets.QListWidget(self.tab_4)
+        self.listWidget_info_ingredients_2 = QtWidgets.QListWidget(self.tab_3)
         self.listWidget_info_ingredients_2.setGeometry(QtCore.QRect(350, 0, 170, 441))
         self.listWidget_info_ingredients_2.setObjectName("listWidget_5")
 
-        self.lineEdit_info_ingredient = QtWidgets.QLineEdit(self.tab_4)
+        self.lineEdit_info_ingredient = QtWidgets.QLineEdit(self.tab_3)
         self.lineEdit_info_ingredient.setGeometry(QtCore.QRect(20, 20, 281, 31))
         self.lineEdit_info_ingredient.setStyleSheet("background: white; border: 2px solid #13bd4b;")
         self.lineEdit_info_ingredient.setText("")
         self.lineEdit_info_ingredient.setObjectName("lineEdit_2")
 
-        self.listWidget_info_ingredients = QtWidgets.QListWidget(self.tab_4)
+        self.listWidget_info_ingredients = QtWidgets.QListWidget(self.tab_3)
         self.listWidget_info_ingredients.setGeometry(QtCore.QRect(20, 130, 311, 201))
         self.listWidget_info_ingredients.setObjectName("listWidget_6")
 
-        self.listWidget_info_ingredients_3 = QtWidgets.QListWidget(self.tab_4)
+        self.listWidget_info_ingredients_3 = QtWidgets.QListWidget(self.tab_3)
         self.listWidget_info_ingredients_3.setGeometry(QtCore.QRect(530, 0, 170, 441))
         self.listWidget_info_ingredients_3.setObjectName("listWidget_7")
-        self.tabWidget.addTab(self.tab_4, "")
+        self.tabWidget.addTab(self.tab_3, "")
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.menubar = QtWidgets.QMenuBar(MainWindow)
@@ -206,16 +165,13 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "window"))
-        self.nick_label.setText(_translate("MainWindow", "aaaaaaa"))
+        self.nick_label.setText(_translate("MainWindow", ""))
         self.tabWidget.setToolTip(_translate("MainWindow", "<html><head/><body><p><br/></p></body></html>"))
         self.btn_info_recipe.setText(_translate("MainWindow", "Посмотреть сведения о еде"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "Info Rec"))
         self.btn_random_recipe.setText(_translate("MainWindow", "Предложить рандомный рецепт"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("MainWindow", "Random Rec"))
-        self.btn_cal_for_day.setText(_translate("MainWindow", "Ввести калория за день"))
-        self.label_calories.setText(_translate("MainWindow", "Учёт калорий"))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_3), _translate("MainWindow", "Calor"))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_4), _translate("MainWindow", "Info Ing"))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_3), _translate("MainWindow", "Info Ing"))
         self.menu_history.setTitle(_translate("MainWindow", "История поиска"))
         self.btn_search_ingredients.setText(_translate("MainWindow", "Посмотреть сведения об ингридиенте"))
 

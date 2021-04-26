@@ -5,6 +5,7 @@ import sys
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
+# класс окна авторизации
 class Ui_Dialog_2(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
