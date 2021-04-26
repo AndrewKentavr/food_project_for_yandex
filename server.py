@@ -9,6 +9,8 @@ from data import db_session
 from data import users_resources, search_history_resources
 
 app = Flask(__name__)
+app.logger.addHandler(logging.StreamHandler(sys.stdout))
+app.logger.setLevel(logging.ERROR)
 api = Api(app)
 
 api.add_resource(users_resources.UserListResource, '/api/users')
@@ -18,13 +20,10 @@ api.add_resource(search_history_resources.SearchHistoryResource, '/api/search_hi
 
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 
-app.logger.addHandler(logging.StreamHandler(sys.stdout))
-app.logger.setLevel(logging.ERROR)
-
 
 @app.route('/')
 def index():
-    return None
+    return 'надпись'
 
 
 if __name__ == '__main__':
