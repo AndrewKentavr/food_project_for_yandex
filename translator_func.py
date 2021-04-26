@@ -2,7 +2,7 @@ from globals import Globals
 import requests
 
 
-def english_trans(text):
+def english_trans(text):  # Функция перевода с любого языка на английский
     req = 'https://translate.api.cloud.yandex.net/translate/v2/translate'
 
     params = {'folder_id': Globals.id_yandex,
@@ -27,7 +27,7 @@ def english_trans(text):
         return "AssertionError"
 
 
-def detect_language(text):
+def detect_language(text):  # Функция определения языка
     req = 'https://translate.api.cloud.yandex.net/translate/v2/detect'
 
     params = {"text": text,

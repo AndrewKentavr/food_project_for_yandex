@@ -2,7 +2,7 @@ from globals import Globals
 import requests
 
 
-def search_recipes(query):
+def search_recipes(query):  # Ищет рецепт
     req = 'https://api.spoonacular.com/recipes/complexSearch'
 
     food_params = {'apiKey': Globals.apiKey_spoonacular_1,
@@ -23,7 +23,7 @@ def search_recipes(query):
         return "AssertionError"
 
 
-def recipe_information(id):
+def recipe_information(id):  # Ищет информацию по рецепту исходя из id рецепта
     req = f'https://api.spoonacular.com/recipes/{id}/information'
     food_params = {'apiKey': Globals.apiKey_spoonacular_1}
 
@@ -50,7 +50,7 @@ def recipe_information(id):
         return "AssertionError"
 
 
-def random_recipes():
+def random_recipes():  # Функция рандомного рецепта
     req = 'https://api.spoonacular.com/recipes/random'
     food_params = {'apiKey': Globals.apiKey_spoonacular_1}
 
@@ -81,7 +81,7 @@ def random_recipes():
         return "AssertionError"
 
 
-def recipe_ingredients_id(id):
+def recipe_ingredients_id(id):  # Ингредиенты в рецепте
     req = f'https://api.spoonacular.com/recipes/{id}/ingredientWidget.json'
     food_params = {'apiKey': Globals.apiKey_spoonacular_1}
 
@@ -106,7 +106,8 @@ def recipe_ingredients_id(id):
 
 # ----------------------Ingredient-----------------------------
 
-def ingredient_search(query):
+def ingredient_search(query):  # Поиск по ингредиенту
+
     req = 'https://api.spoonacular.com/food/ingredients/search'
 
     food_params = {'apiKey': Globals.apiKey_spoonacular_1,
@@ -129,7 +130,7 @@ def ingredient_search(query):
         return "AssertionError"
 
 
-def ingredient_information(id):
+def ingredient_information(id):  # Поиск информации по инредиенту исходя из id
     req = f'https://api.spoonacular.com/food/ingredients/{id}/information'
     food_params = {'apiKey': Globals.apiKey_spoonacular_1,
                    'amount': 1}
