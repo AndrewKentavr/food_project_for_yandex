@@ -6,7 +6,6 @@ from datetime import datetime
 from PyQt5 import QtCore, QtGui, QtWidgets
 from email_validator import *
 from flask import Flask
-from flask_login import LoginManager
 from flask_restful import Api
 from requests import post, put, get
 
@@ -40,8 +39,6 @@ api.add_resource(search_history_resources.SearchHistoryListResource, '/api/searc
 api.add_resource(search_history_resources.SearchHistoryResource, '/api/search_histories/<int:history_id>')
 
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
-login_manager = LoginManager()
-login_manager.init_app(app)
 
 
 @app.route('/')
