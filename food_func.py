@@ -60,7 +60,6 @@ def random_recipes():
         assert response
         json_response = response.json()
         try:
-            print(json_response['recipes'])
             name = json_response['recipes'][0]['title']
             image = json_response['recipes'][0]['image']
             summary = json_response['recipes'][0]['summary']
@@ -159,7 +158,6 @@ def ingredient_information(id):
 
                 else:
                     info[nutrients[i]['name']] = nutrients[i]
-            print(info)
             return info
         except IndexError:
             print("IndexError")
