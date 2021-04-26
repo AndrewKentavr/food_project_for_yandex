@@ -5,11 +5,9 @@ from datetime import datetime
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from email_validator import *
-from flask import Flask
-from flask_restful import Api
 from requests import post, put, get
 
-from data import users_resources, db_session, search_history_resources
+from data import db_session
 from data.users import User
 from food_func import *
 from translator_func import *
@@ -29,21 +27,6 @@ def my_excepthook(type, value, tback):
 
 
 sys.excepthook = my_excepthook
-
-app = Flask(__name__)
-api = Api(app)
-
-api.add_resource(users_resources.UserListResource, '/api/users')
-api.add_resource(users_resources.UserResource, '/api/users/<int:user_id>')
-api.add_resource(search_history_resources.SearchHistoryListResource, '/api/search_histories')
-api.add_resource(search_history_resources.SearchHistoryResource, '/api/search_histories/<int:history_id>')
-
-app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
-
-
-@app.route('/')
-def index():
-    return None
 
 
 class ApplicationThread(QtCore.QThread):
@@ -343,10 +326,6 @@ class MainWindowCore(Ui_MainWindow):
 
 if __name__ == '__main__':
     app_window = QtWidgets.QApplication(sys.argv)
-    db_session.global_init('db/food_system.sqlite')
-    webapp = ApplicationThread(app)
-    webapp.start()
-    app_window.aboutToQuit.connect(webapp.terminate)
     MainWindow = QtWidgets.QMainWindow()
     ex = MainWindowCore()
     MainWindow.show()
