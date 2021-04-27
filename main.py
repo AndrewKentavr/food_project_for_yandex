@@ -273,10 +273,22 @@ class MainWindowCore(Ui_MainWindow):
 
         text = ''
         text += 'Name -- ' + str(ingredient[1]) + '\n'
-        text += 'Calories: ' + str(info_ing['Calories']['amount']) + '\n'
-        text += 'Fat: ' + str(info_ing['Fat']['amount']) + '\n'
-        text += 'Sugar: ' + str(info_ing['Sugar']['amount']) + '\n'
-        text += 'Protein: ' + str(info_ing['Protein']['amount']) + '\n'
+        try:
+            text += 'Calories: ' + str(info_ing['Calories']['amount']) + '\n'
+        except TypeError:
+            pass
+        try:
+            text += 'Fat: ' + str(info_ing['Fat']['amount']) + '\n'
+        except TypeError:
+            pass
+        try:
+            text += 'Sugar: ' + str(info_ing['Sugar']['amount']) + '\n'
+        except TypeError:
+            pass
+        try:
+            text += 'Protein: ' + str(info_ing['Protein']['amount']) + '\n'
+        except TypeError:
+            pass
 
         text_2 = ''
         text_3 = ''
