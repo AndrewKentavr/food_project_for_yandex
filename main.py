@@ -158,11 +158,11 @@ class MainWindowCore(Ui_MainWindow):
 
         if text.isspace() or not text:
             self.error_dialog.showMessage('Вы ничего не ввели')
-            return False
+            return 0
 
         if any(not c.isalnum() for c in text) or any(map(str.isdigit, text)):
             self.error_dialog.showMessage('Вы ввели недопустимые символы')
-            return False
+            return 0
 
         lang = detect_language(text)
 
@@ -170,6 +170,10 @@ class MainWindowCore(Ui_MainWindow):
             text = english_trans(text)
 
         recipe = search_recipes(text)
+
+        if recipe == 'AssertionError' or recipe == 'IndexError':
+            self.error_dialog.showMessage('Такого рецепта не существует')
+            return 0
 
         img_url = recipe[1]
 
@@ -259,6 +263,10 @@ class MainWindowCore(Ui_MainWindow):
 
         ingredient = ingredient_search(text)  # [0] - id; [1] - name
 
+        if ingredient == 'AssertionError' or ingredient == 'IndexError':
+            self.error_dialog.showMessage('Такого ингредиента не существует')
+            return 0
+
         info_ing = ingredient_information(ingredient[0])
 
         text = ''
@@ -285,6 +293,12 @@ class MainWindowCore(Ui_MainWindow):
 
         self.listWidget_info_ingredients.clear()
         self.listWidget_info_ingredients.addItem(text)
+
+        self.listWidget_info_ingredients_2.clear()
+        self.listWidget_info_ingredients_2.addItem(text_2)
+
+        self.listWidget_info_ingredients_3.clear()
+        self.listWidget_info_ingredients_3.addItem(text_3)
 
         put(f"https://food-project-lyceum.herokuapp.com/api/search_histories/{self.user['user']['id']}",
             json={'title': ingredient[1], 'date': str(datetime.now())}).json()
