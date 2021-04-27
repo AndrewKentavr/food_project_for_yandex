@@ -295,7 +295,7 @@ class MainWindowCore(Ui_MainWindow):
 
         count = 0
         for i in info_ing:
-            if i == 'Calories' or i == 'Fat' or i == 'Sugar' or i == 'Protein':
+            if i == 'Calories' or i == 'Fat' or i == 'Sugar' or i == 'Protein' or not info_ing[i]['amount']:
                 continue
             else:
                 if count < 17:
@@ -326,7 +326,7 @@ class MainWindowCore(Ui_MainWindow):
         try:
             user = get("https://food-project-lyceum.herokuapp.com/"
                        "api/users/0", json=email).json()
-            assert user != {'error': 'not found'}
+            assert user == {'error': 'not found'}
             return True
         except AssertionError:
             return False
