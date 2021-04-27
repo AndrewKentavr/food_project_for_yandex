@@ -32,6 +32,7 @@ def recipe_information(id):  # Ищет информацию по рецепту
     try:
         assert response
         json_response = response.json()
+        print(json_response)
         try:
             summary = json_response['summary']
 

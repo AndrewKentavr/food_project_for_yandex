@@ -170,7 +170,7 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "Food info window"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Foodesc"))
         self.nick_label.setText(_translate("MainWindow", ""))
         self.tabWidget.setToolTip(_translate("MainWindow", "<html><head/><body><p><br/></p></body></html>"))
         self.btn_info_recipe.setText(_translate("MainWindow", "Посмотреть сведения о еде"))

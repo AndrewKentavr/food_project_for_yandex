@@ -5,7 +5,7 @@ block_cipher = None
 
 
 a = Analysis(['main.py'],
-             pathex=['C:\\Users\\Admin\\PycharmProjects\\food_project_for_yandex'],
+             pathex=['C:\\Users\\andrt\\PycharmProjects\\food_project_for_yandex'],
              binaries=[],
              datas=[],
              hiddenimports=[],

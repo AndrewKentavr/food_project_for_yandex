@@ -160,19 +160,11 @@ class MainWindowCore(Ui_MainWindow):
             self.error_dialog.showMessage('Вы ничего не ввели')
             return 0
 
-        text = text.strip()
-        text = text.lstrip()
-        for element in text:
-            if not element.isalnum() and element != ' ':
+        if any(not c.isalnum() for c in text) or any(map(str.isdigit, text)):
+            if ' ' not in text:
                 self.error_dialog.showMessage('Вы ввели недопустимые символы')
                 return 0
-        if any(map(str.isdigit, text)):
-            self.error_dialog.showMessage('Вы ввели недопустимые символы')
-            return 0
-        while '  ' in text:
-            text = text.replace('  ', ' ')
         source_text = text
-
         lang = detect_language(text)
 
         if lang != 'en':  # тут с помощью Api Яндекса определяется на каком языке написан запрос
@@ -261,28 +253,20 @@ class MainWindowCore(Ui_MainWindow):
             self.error_dialog.showMessage('Вы ничего не ввели')
             return 0
 
-        text = text.strip()
-        text = text.lstrip()
-        for element in text:
-            if not element.isalnum() and element != ' ':
+        if any(not c.isalnum() for c in text) or any(map(str.isdigit, text)):
+            if ' ' not in text:
                 self.error_dialog.showMessage('Вы ввели недопустимые символы')
                 return 0
-        if any(map(str.isdigit, text)):
-            self.error_dialog.showMessage('Вы ввели недопустимые символы')
-            return 0
-        while '  ' in text:
-            text = text.replace('  ', ' ')
         source_text = text
-
         lang = detect_language(text)
 
-        if lang != 'en':
+        if lang != 'en':  # тут с помощью Api Яндекса определяется на каком языке написан запрос
             text = english_trans(text)
 
-        ingredient = ingredient_search(text)  # [0] - id; [1] - name
+        ingredient = search_recipes(text)
 
         if ingredient == 'AssertionError' or ingredient == 'IndexError':
-            self.error_dialog.showMessage('Такого ингредиента не существует')
+            self.error_dialog.showMessage('Такого рецепта не существует')
             return 0
 
         info_ing = ingredient_information(ingredient[0])
