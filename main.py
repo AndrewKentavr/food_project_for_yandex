@@ -79,13 +79,14 @@ class MainWindowCore(Ui_MainWindow):
     def authorization(self):
         user_email = {'email': self.login_window.email_line.text()}
         try:
-            self.user = get("http://localhost:5000/api/users/0", json=user_email).json()
+            self.user = get("https://food-project-lyceum.herokuapp.com/api/users/0", json=user_email).json()
             assert self.user != {'error': 'not found'}
             user_hash = self.user['user']['hashed_password']
             assert check_password_hash(user_hash, self.login_window.password_line.text())
             self.login_window.widget_off()
             self.nick_label.setText(self.user['user']['nick_name'])
-            self.history = get(f"http://localhost:5000/api/search_histories/{self.user['user']['id']}").json() \
+            self.history = get(f"https://food-project-lyceum.herokuapp.com"
+                               f"/api/search_histories/{self.user['user']['id']}").json() \
                 ['searches']['history']
             self.user['user']['hashed_password'] = None
             self.widget_on(MainWindow)
@@ -115,7 +116,7 @@ class MainWindowCore(Ui_MainWindow):
                                 'email': self.register_window.email_register_line.text(),
                                 'password': self.register_window.password_register_line.text()
                             }
-                            post("http://localhost:5000/api/users", json=user).json()
+                            post("https://food-project-lyceum.herokuapp.com/api/users", json=user).json()
                             self.register_window.widget_off()
                             self.login_window.widget_on(MainWindow)
                         else:
@@ -143,7 +144,7 @@ class MainWindowCore(Ui_MainWindow):
     def history_clear(self):
         model = QtGui.QStandardItemModel()
         self.history_window.list_history.setModel(model)
-        put(f"http://localhost:5000/api/search_histories/{self.user.id}",
+        put(f"https://food-project-lyceum.herokuapp.com/api/search_histories/{self.user['user']['id']}",
             json={'title': 'NULL', 'date': str(datetime.now())}).json()
 
     # метод смены интерфейса
@@ -197,9 +198,10 @@ class MainWindowCore(Ui_MainWindow):
         self.listWidget_info_recipe_2.clear()
         self.listWidget_info_recipe_2.addItem(recipe_text)
 
-        put(f"http://localhost:5000/api/search_histories/{self.user['user']['id']}",
+        put(f"https://food-project-lyceum.herokuapp.com/api/search_histories/{self.user['user']['id']}",
             json={'title': self.lineEdit_info_recipe.text(), 'date': str(datetime.now())}).json()
-        self.history = get(f"http://localhost:5000/api/search_histories/{self.user['user']['id']}").json() \
+        self.history = get(f"https://food-project-lyceum.herokuapp.com/"
+                           f"api/search_histories/{self.user['user']['id']}").json() \
             ['searches']['history']
 
     def output_random_recipes(self):
@@ -231,9 +233,10 @@ class MainWindowCore(Ui_MainWindow):
         self.listWidget_random_recipe_2.clear()
         self.listWidget_random_recipe_2.addItem(text_inf)
 
-        put(f"http://localhost:5000/api/search_histories/{self.user['user']['id']}",
+        put(f"https://food-project-lyceum.herokuapp.com/api/search_histories/{self.user['user']['id']}",
             json={'title': ran_rec[0], 'date': str(datetime.now())}).json()
-        self.history = get(f"http://localhost:5000/api/search_histories/{self.user['user']['id']}").json() \
+        self.history = get(f"https://food-project-lyceum.herokuapp.com/"
+                           f"api/search_histories/{self.user['user']['id']}").json() \
             ['searches']['history']
 
     def input_search_ingredients(self):
@@ -283,16 +286,18 @@ class MainWindowCore(Ui_MainWindow):
         self.listWidget_info_ingredients.clear()
         self.listWidget_info_ingredients.addItem(text)
 
-        put(f"http://localhost:5000/api/search_histories/{self.user['user']['id']}",
+        put(f"https://food-project-lyceum.herokuapp.com/api/search_histories/{self.user['user']['id']}",
             json={'title': ingredient[1], 'date': str(datetime.now())}).json()
-        self.history = get(f"http://localhost:5000/api/search_histories/{self.user['user']['id']}").json() \
+        self.history = get(f"https://food-project-lyceum.herokuapp.com/"
+                           f"api/search_histories/{self.user['user']['id']}").json() \
             ['searches']['history']
 
     # метод проверки пользователя в базе данных для функции регистрации
     def email_in_database(self):
         email = {'email': self.register_window.password_register_line.text()}
         try:
-            user = get("http://localhost:5000/api/users/0", json=email).json()
+            user = get("https://food-project-lyceum.herokuapp.com/"
+                       "api/users/0", json=email).json()
             assert user != {'error': 'not found'}
             return True
         except AssertionError:
