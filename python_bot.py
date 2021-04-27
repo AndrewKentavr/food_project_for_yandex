@@ -94,7 +94,7 @@ def cancel(update: Update, _: CallbackContext) -> int:
     pass
 
 
-def main() -> None:
+def main(port) -> None:
     updater = Updater("1554384456:AAG_ZH5_8SLCPdxR2XfN5lKhDS16cFFACFI")
     dispatcher = updater.dispatcher
 
@@ -113,7 +113,11 @@ def main() -> None:
 
     dispatcher.add_handler(conv_handler)
 
-    updater.start_polling()
+    updater.start_webhook(listen="0.0.0.0",
+                          port=int(port),
+                          url_path='1554384456:AAG_ZH5_8SLCPdxR2XfN5lKhDS16cFFACFI')
+    updater.bot.setWebhook('https://food-project-lyceum.herokuapp.com/' +
+                           '1554384456:AAG_ZH5_8SLCPdxR2XfN5lKhDS16cFFACFI')
 
     updater.idle()
 

@@ -1,3 +1,4 @@
+import os
 import logging
 import os
 import sys
@@ -30,17 +31,6 @@ api.add_resource(search_history_resources.SearchHistoryListResource, '/api/searc
 api.add_resource(search_history_resources.SearchHistoryResource, '/api/search_histories/<int:history_id>')
 
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
-
-
-@app.route('/')
-def index():
-    return 'надпись'
-
-
-# !/usr/bin/env python
-# pylint: disable=C0116
-# This program is dedicated to the public domain under the CC0 license.
-
 
 # Enable logging
 logging.basicConfig(
@@ -139,13 +129,23 @@ def main() -> None:
 
     dispatcher.add_handler(conv_handler)
 
-    updater.start_polling()
+    updater.start_webhook(listen="0.0.0.0",
+                          port=PORT,
+                          url_path=TOKEN)
+    updater.bot.setWebhook('https://food-project-lyceum.herokuapp.com/' +
+                           TOKEN)
 
     updater.idle()
 
 
+@app.route('/')
+def index():
+    return 'надпись'
+
+
 if __name__ == '__main__':
     db_session.global_init('db/food_system.sqlite')
-    port = int(os.environ.get("PORT", 5000))
+    PORT = int(os.environ.get("PORT", 5000))
+    TOKEN = '1554384456:AAG_ZH5_8SLCPdxR2XfN5lKhDS16cFFACFI'
+    app.run(host='0.0.0.0', port=PORT)
     main()
-    app.run(host='0.0.0.0', port=port)
