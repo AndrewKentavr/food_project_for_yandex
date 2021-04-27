@@ -160,9 +160,18 @@ class MainWindowCore(Ui_MainWindow):
             self.error_dialog.showMessage('Вы ничего не ввели')
             return 0
 
-        if any(not c.isalnum() for c in text) or any(map(str.isdigit, text)):
+        text = text.strip()
+        text = text.lstrip()
+        for element in text:
+            if not element.isalnum() and element != ' ':
+                self.error_dialog.showMessage('Вы ввели недопустимые символы')
+                return 0
+        if any(map(str.isdigit, text)):
             self.error_dialog.showMessage('Вы ввели недопустимые символы')
             return 0
+        while '  ' in text:
+            text = text.replace('  ', ' ')
+        source_text = text
 
         lang = detect_language(text)
 
@@ -203,7 +212,7 @@ class MainWindowCore(Ui_MainWindow):
         self.listWidget_info_recipe_2.addItem(recipe_text)
 
         put(f"https://food-project-lyceum.herokuapp.com/api/search_histories/{self.user['user']['id']}",
-            json={'title': self.lineEdit_info_recipe.text(), 'date': str(datetime.now())}).json()
+            json={'title': source_text, 'date': str(datetime.now())}).json()
         self.history = get(f"https://food-project-lyceum.herokuapp.com/"
                            f"api/search_histories/{self.user['user']['id']}").json() \
             ['searches']['history']
@@ -252,9 +261,18 @@ class MainWindowCore(Ui_MainWindow):
             self.error_dialog.showMessage('Вы ничего не ввели')
             return 0
 
-        if any(not c.isalnum() for c in text) or any(map(str.isdigit, text)):
+        text = text.strip()
+        text = text.lstrip()
+        for element in text:
+            if not element.isalnum() and element != ' ':
+                self.error_dialog.showMessage('Вы ввели недопустимые символы')
+                return 0
+        if any(map(str.isdigit, text)):
             self.error_dialog.showMessage('Вы ввели недопустимые символы')
             return 0
+        while '  ' in text:
+            text = text.replace('  ', ' ')
+        source_text = text
 
         lang = detect_language(text)
 
@@ -301,7 +319,7 @@ class MainWindowCore(Ui_MainWindow):
         self.listWidget_info_ingredients_3.addItem(text_3)
 
         put(f"https://food-project-lyceum.herokuapp.com/api/search_histories/{self.user['user']['id']}",
-            json={'title': ingredient[1], 'date': str(datetime.now())}).json()
+            json={'title': source_text, 'date': str(datetime.now())}).json()
         self.history = get(f"https://food-project-lyceum.herokuapp.com/"
                            f"api/search_histories/{self.user['user']['id']}").json() \
             ['searches']['history']
