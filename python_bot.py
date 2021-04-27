@@ -116,9 +116,6 @@ def main() -> None:
 
     dispatcher.add_handler(conv_handler)
 
-    updater.start_webhook(listen="0.0.0.0",
-                          port=int(PORT),
-                          url_path=TOKEN)
     updater.bot.setWebhook('https://food-project-lyceum.herokuapp.com/' + TOKEN)
     updater.idle()
 
