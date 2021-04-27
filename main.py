@@ -322,11 +322,11 @@ class MainWindowCore(Ui_MainWindow):
 
     # метод проверки пользователя в базе данных для функции регистрации
     def email_in_database(self):
-        email = {'email': self.register_window.password_register_line.text()}
+        email = {'email': self.register_window.email_register_line.text()}
         try:
             user = get("https://food-project-lyceum.herokuapp.com/"
                        "api/users/0", json=email).json()
-            assert user == {'error': 'not found'}
+            assert user != {'error': 'not found'}
             return True
         except AssertionError:
             return False
