@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # pylint: disable=C0116
 # This program is dedicated to the public domain under the CC0 license.
-
+import os
 import logging
 from food_func import *
 from translator_func import *
@@ -24,6 +24,9 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 CHOOSING = range(1)
+
+TOKEN = '1731985564:AAEixSjEJhXdSRRpqTiCf9N9T6FHzixO1bM'
+PORT = int(os.environ.get("PORT", 5000))
 
 reply_keyboard = [['Информация рецептов', 'Рандомный рецепт', 'Информация ингредиентов']]
 markup = ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
@@ -94,8 +97,8 @@ def cancel(update: Update, _: CallbackContext) -> int:
     pass
 
 
-def main(port) -> None:
-    updater = Updater("1554384456:AAG_ZH5_8SLCPdxR2XfN5lKhDS16cFFACFI")
+def main() -> None:
+    updater = Updater(TOKEN)
     dispatcher = updater.dispatcher
 
     conv_handler = ConversationHandler(
@@ -114,11 +117,9 @@ def main(port) -> None:
     dispatcher.add_handler(conv_handler)
 
     updater.start_webhook(listen="0.0.0.0",
-                          port=int(port),
-                          url_path='1554384456:AAG_ZH5_8SLCPdxR2XfN5lKhDS16cFFACFI')
-    updater.bot.setWebhook('https://food-project-lyceum.herokuapp.com/' +
-                           '1554384456:AAG_ZH5_8SLCPdxR2XfN5lKhDS16cFFACFI')
-
+                          port=int(PORT),
+                          url_path=TOKEN)
+    updater.bot.setWebhook('https://food-project-lyceum.herokuapp.com/' + TOKEN)
     updater.idle()
 
 
