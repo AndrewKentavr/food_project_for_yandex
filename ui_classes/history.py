@@ -52,7 +52,7 @@ class Ui_Dialog_history(object):
         self.list_history.close()
 
     def widget_on(self, dialog, history):
-        dialog.resize(540, 750)
+        dialog.resize(540, 760)
         self.btn_exit.show()
 
         history = json.loads(history)
