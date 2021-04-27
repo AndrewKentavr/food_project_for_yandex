@@ -1,2 +1,2 @@
 web: python server.py
-web: python python_bot.py
+worker: python python_bot.py
