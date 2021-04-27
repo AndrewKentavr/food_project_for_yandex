@@ -1,4 +1,3 @@
-import os
 import logging
 import os
 import sys
@@ -111,7 +110,7 @@ def cancel(update: Update, _: CallbackContext) -> int:
 
 
 def main() -> None:
-    updater = Updater("1554384456:AAG_ZH5_8SLCPdxR2XfN5lKhDS16cFFACFI")
+    updater = Updater(TOKEN)
     dispatcher = updater.dispatcher
 
     conv_handler = ConversationHandler(
@@ -147,5 +146,5 @@ if __name__ == '__main__':
     db_session.global_init('db/food_system.sqlite')
     PORT = int(os.environ.get("PORT", 5000))
     TOKEN = '1554384456:AAG_ZH5_8SLCPdxR2XfN5lKhDS16cFFACFI'
-    app.run(host='0.0.0.0', port=PORT)
     main()
+    app.run(host='0.0.0.0', port=PORT)
