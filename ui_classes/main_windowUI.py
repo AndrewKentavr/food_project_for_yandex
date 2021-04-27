@@ -20,6 +20,12 @@ class Ui_MainWindow(object):
 
         self.nick_label = QtWidgets.QLabel(self.centralwidget)
         self.nick_label.setGeometry(QtCore.QRect(500, 30, 339, 20))
+        font = QtGui.QFont()
+        font.setFamily("Bahnschrift")
+        font.setPointSize(12)
+        font.setBold(True)
+        font.setWeight(75)
+        self.nick_label.setFont(font)
 
         # ---------------------TAB 1-------------------------------------------
 
