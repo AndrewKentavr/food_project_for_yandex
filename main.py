@@ -254,48 +254,35 @@ class MainWindowCore(Ui_MainWindow):
             return 0
 
         if any(not c.isalnum() for c in text) or any(map(str.isdigit, text)):
-            if ' ' not in text:
-                self.error_dialog.showMessage('Вы ввели недопустимые символы')
-                return 0
-        source_text = text
+            self.error_dialog.showMessage('Вы ввели недопустимые символы')
+            return 0
+
         lang = detect_language(text)
 
-        if lang != 'en':  # тут с помощью Api Яндекса определяется на каком языке написан запрос
+        if lang != 'en':
             text = english_trans(text)
 
-        ingredient = search_recipes(text)
+        ingredient = ingredient_search(text)  # [0] - id; [1] - name
 
         if ingredient == 'AssertionError' or ingredient == 'IndexError':
-            self.error_dialog.showMessage('Такого рецепта не существует')
+            self.error_dialog.showMessage('Такого ингредиента не существует')
             return 0
 
         info_ing = ingredient_information(ingredient[0])
 
         text = ''
         text += 'Name -- ' + str(ingredient[1]) + '\n'
-        try:
-            text += 'Calories: ' + str(info_ing['Calories']['amount']) + '\n'
-        except TypeError:
-            pass
-        try:
-            text += 'Fat: ' + str(info_ing['Fat']['amount']) + '\n'
-        except TypeError:
-            pass
-        try:
-            text += 'Sugar: ' + str(info_ing['Sugar']['amount']) + '\n'
-        except TypeError:
-            pass
-        try:
-            text += 'Protein: ' + str(info_ing['Protein']['amount']) + '\n'
-        except TypeError:
-            pass
+        text += 'Calories: ' + str(info_ing['Calories']['amount']) + '\n'
+        text += 'Fat: ' + str(info_ing['Fat']['amount']) + '\n'
+        text += 'Sugar: ' + str(info_ing['Sugar']['amount']) + '\n'
+        text += 'Protein: ' + str(info_ing['Protein']['amount']) + '\n'
 
         text_2 = ''
         text_3 = ''
 
         count = 0
         for i in info_ing:
-            if i == 'Calories' or i == 'Fat' or i == 'Sugar' or i == 'Protein' or not info_ing[i]['amount']:
+            if i == 'Calories' or i == 'Fat' or i == 'Sugar' or i == 'Protein':
                 continue
             else:
                 if count < 17:
