@@ -128,11 +128,7 @@ def main() -> None:
 
     dispatcher.add_handler(conv_handler)
 
-    updater.start_webhook(listen="0.0.0.0",
-                          port=PORT,
-                          url_path=TOKEN)
-    updater.bot.setWebhook('https://food-project-lyceum.herokuapp.com/' +
-                           TOKEN)
+    updater.start_polling()
 
     updater.idle()
 
@@ -145,6 +141,6 @@ def index():
 if __name__ == '__main__':
     db_session.global_init('db/food_system.sqlite')
     PORT = int(os.environ.get("PORT", 5000))
-    TOKEN = '1554384456:AAG_ZH5_8SLCPdxR2XfN5lKhDS16cFFACFI'
+    TOKEN = '1731985564:AAEixSjEJhXdSRRpqTiCf9N9T6FHzixO1bM'
+    app.run()
     main()
-    app.run(host='0.0.0.0', port=PORT)
