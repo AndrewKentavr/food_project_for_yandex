@@ -2,44 +2,18 @@
 # pyuic5 shit.ui -o shit.py
 
 from datetime import datetime
-
+import sqlite3
 from PyQt5 import QtCore, QtGui, QtWidgets
 from email_validator import *
 from requests import post, put, get
 from werkzeug.security import check_password_hash
 
-from data import db_session
 from food_func import *
 from translator_func import *
 from ui_classes.authorization import Ui_Dialog_2
 from ui_classes.history import Ui_Dialog_history
 from ui_classes.main_windowUI import Ui_MainWindow
 from ui_classes.registration import Ui_Dialog
-
-
-def my_excepthook(type, value, tback):
-    QtWidgets.QMessageBox.critical(
-        window, "CRITICAL ERROR", str(value),
-        QtWidgets.QMessageBox.Cancel
-    )
-
-    sys.__excepthook__(type, value, tback)
-
-
-sys.excepthook = my_excepthook
-
-
-class ApplicationThread(QtCore.QThread):
-    def __init__(self, application, port=5000):
-        super(ApplicationThread, self).__init__()
-        self.application = application
-        self.port = port
-
-    def __del__(self):
-        self.wait()
-
-    def run(self):
-        self.application.run(port=self.port, threaded=True)
 
 
 class MainWindowCore(Ui_MainWindow):
@@ -111,12 +85,18 @@ class MainWindowCore(Ui_MainWindow):
                     if self.password_check():
                         if self.register_window.password_register_line.text() == \
                                 self.register_window.repeat_password_line.text():
-                            user = {
-                                'nick_name': self.register_window.nick_line.text(),
-                                'email': self.register_window.email_register_line.text(),
-                                'password': self.register_window.password_register_line.text()
-                            }
-                            post("https://food-project-lyceum.herokuapp.com/api/users", json=user).json()
+
+                            con = sqlite3.connect(Globals.db_name)
+                            cur = con.cursor()
+                            cur.execute(f"""INSERT INTO Users (nick_name, email, password)
+                            VALUES ("{self.register_window.nick_line.text()}", "{self.register_window.email_register_line.text()}", "{self.register_window.password_register_line.text()}");""")
+
+                            value = cur.fetchall()
+                            print(value)
+                            con.commit()
+                            cur.close()
+                            con.close()
+
                             self.register_window.widget_off()
                             self.login_window.widget_on(MainWindow)
                         else:
@@ -309,14 +289,22 @@ class MainWindowCore(Ui_MainWindow):
 
     # метод проверки пользователя в базе данных для функции регистрации
     def email_in_database(self):
-        email = {'email': self.register_window.email_register_line.text()}
-        try:
-            user = get("https://food-project-lyceum.herokuapp.com/"
-                       "api/users/0", json=email).json()
-            assert user != {'error': 'not found'}
-            return True
-        except AssertionError:
+        email = self.register_window.email_register_line.text()
+
+        con = sqlite3.connect(Globals.db_name)
+        cur = con.cursor()
+        cur.execute(f"""SELECT email FROM users""")
+        cat = cur.fetchall()
+        value = [cat[i][0] for i in range(len(cat))]
+        print(value)
+        con.commit()
+        cur.close()
+        con.close()
+
+        if email in value:
             return False
+        else:
+            return True
 
     # метод на корректность адресса электронной почты
     def email_validate(self):
@@ -347,7 +335,6 @@ class MainWindowCore(Ui_MainWindow):
 
 
 if __name__ == '__main__':
-    print(db_session.__factory)
     app_window = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
     ex = MainWindowCore()

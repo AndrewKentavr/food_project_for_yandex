@@ -4,6 +4,7 @@ class Globals:
     id_yandex = 'b1ghv3pdod31alo8jrrn'
     apiKey_yandex_translator = 'Api-Key AQVN16eXyhRvpmU7ozpshNnfrZNwmIIsDx2FI6W7'
 
+    db_name = 'db_main/data_base_main.db'
 # cat5Tjd@gmail.com
 
 # 6f7f733b7964497f8f87b57149c43bbc
