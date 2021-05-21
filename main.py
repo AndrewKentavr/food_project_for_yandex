@@ -5,8 +5,6 @@ from datetime import datetime
 import sqlite3
 from PyQt5 import QtCore, QtGui, QtWidgets
 from email_validator import *
-from requests import post, put, get
-from werkzeug.security import check_password_hash
 
 from food_func import *
 from translator_func import *
@@ -51,25 +49,34 @@ class MainWindowCore(Ui_MainWindow):
     # если данные введены корректно, то программа получает самого пользователя и его историю
     # а также сменяется интерфейс на интерфейс основного окна
     def authorization(self):
-        user_email = {'email': self.login_window.email_line.text()}
-        try:
-            self.user = get("https://food-project-lyceum.herokuapp.com/api/users/0", json=user_email).json()
-            assert self.user != {'error': 'not found'}
-            user_hash = self.user['user']['hashed_password']
-            assert check_password_hash(user_hash, self.login_window.password_line.text())
-            self.login_window.widget_off()
-            self.nick_label.setText(self.user['user']['nick_name'])
-            self.history = get(f"https://food-project-lyceum.herokuapp.com"
-                               f"/api/search_histories/{self.user['user']['id']}").json() \
-                ['searches']['history']
-            self.user['user']['hashed_password'] = None
-            self.widget_on(MainWindow)
-        except IndexError:
-            self.login_window.error_line.setText('пароль или логин введены неккоректно')
-        except AssertionError:
-            self.login_window.error_line.setText('пароль или логин введены неккоректно')
-        finally:
-            pass
+        user_email = self.login_window.email_line.text()
+        password = self.login_window.password_line.text()
+
+        con = sqlite3.connect('db_main/data_base_main.db')
+        cur = con.cursor()
+        # cur.execute(f"""INSERT INTO Users (nick_name, email, password, id_history)
+        # VALUES ("{nick_name}", "{email}", "{password}", "12");""")
+
+        cur.execute(f"""SELECT email, password, nick_name FROM users""")
+        email_and_passwords = cur.fetchall()
+        value = [email_and_passwords[i] for i in range(len(email_and_passwords))]
+        con.commit()
+        cur.close()
+        con.close()
+        for i in value:
+            if user_email in i:
+                if password == i[1]:
+
+                    self.login_window.widget_off()
+                    self.nick_label.setText(i[2])
+                    # self.history = get(f"https://food-project-lyceum.herokuapp.com"
+                    #                    f"/api/search_histories/{self.user['user']['id']}").json() \
+                    #     ['searches']['history']
+                    self.widget_on(MainWindow)
+                else:
+                    self.login_window.error_line.setText('пароль или логин введены неккоректно')
+            else:
+                self.login_window.error_line.setText('пароль или логин введены неккоректно')
 
     # метод смены интерфейса
     def registration_switch(self):
@@ -92,7 +99,6 @@ class MainWindowCore(Ui_MainWindow):
                             VALUES ("{self.register_window.nick_line.text()}", "{self.register_window.email_register_line.text()}", "{self.register_window.password_register_line.text()}");""")
 
                             value = cur.fetchall()
-                            print(value)
                             con.commit()
                             cur.close()
                             con.close()
@@ -124,8 +130,8 @@ class MainWindowCore(Ui_MainWindow):
     def history_clear(self):
         model = QtGui.QStandardItemModel()
         self.history_window.list_history.setModel(model)
-        put(f"https://food-project-lyceum.herokuapp.com/api/search_histories/{self.user['user']['id']}",
-            json={'title': 'NULL', 'date': str(datetime.now())}).json()
+        # put(f"https://food-project-lyceum.herokuapp.com/api/search_histories/{self.user['user']['id']}",
+        #     json={'title': 'NULL', 'date': str(datetime.now())}).json()
 
     # метод смены интерфейса
     def history_main_switch(self):
@@ -183,11 +189,11 @@ class MainWindowCore(Ui_MainWindow):
         self.listWidget_info_recipe_2.clear()
         self.listWidget_info_recipe_2.addItem(recipe_text)
 
-        put(f"https://food-project-lyceum.herokuapp.com/api/search_histories/{self.user['user']['id']}",
-            json={'title': source_text, 'date': str(datetime.now())}).json()
-        self.history = get(f"https://food-project-lyceum.herokuapp.com/"
-                           f"api/search_histories/{self.user['user']['id']}").json() \
-            ['searches']['history']
+        # put(f"https://food-project-lyceum.herokuapp.com/api/search_histories/{self.user['user']['id']}",
+        #     json={'title': source_text, 'date': str(datetime.now())}).json()
+        # self.history = get(f"https://food-project-lyceum.herokuapp.com/"
+        #                    f"api/search_histories/{self.user['user']['id']}").json() \
+        #     ['searches']['history']
 
     def output_random_recipes(self):
         ran_rec = random_recipes()
@@ -218,11 +224,11 @@ class MainWindowCore(Ui_MainWindow):
         self.listWidget_random_recipe_2.clear()
         self.listWidget_random_recipe_2.addItem(text_inf)
 
-        put(f"https://food-project-lyceum.herokuapp.com/api/search_histories/{self.user['user']['id']}",
-            json={'title': ran_rec[0], 'date': str(datetime.now())}).json()
-        self.history = get(f"https://food-project-lyceum.herokuapp.com/"
-                           f"api/search_histories/{self.user['user']['id']}").json() \
-            ['searches']['history']
+        # put(f"https://food-project-lyceum.herokuapp.com/api/search_histories/{self.user['user']['id']}",
+        #     json={'title': ran_rec[0], 'date': str(datetime.now())}).json()
+        # self.history = get(f"https://food-project-lyceum.herokuapp.com/"
+        #                    f"api/search_histories/{self.user['user']['id']}").json() \
+        #     ['searches']['history']
 
     def input_search_ingredients(self):
 
@@ -281,11 +287,11 @@ class MainWindowCore(Ui_MainWindow):
         self.listWidget_info_ingredients_3.clear()
         self.listWidget_info_ingredients_3.addItem(text_3)
 
-        put(f"https://food-project-lyceum.herokuapp.com/api/search_histories/{self.user['user']['id']}",
-            json={'title': source_text, 'date': str(datetime.now())}).json()
-        self.history = get(f"https://food-project-lyceum.herokuapp.com/"
-                           f"api/search_histories/{self.user['user']['id']}").json() \
-            ['searches']['history']
+        # put(f"https://food-project-lyceum.herokuapp.com/api/search_histories/{self.user['user']['id']}",
+        #     json={'title': source_text, 'date': str(datetime.now())}).json()
+        # self.history = get(f"https://food-project-lyceum.herokuapp.com/"
+        #                    f"api/search_histories/{self.user['user']['id']}").json() \
+        #     ['searches']['history']
 
     # метод проверки пользователя в базе данных для функции регистрации
     def email_in_database(self):
@@ -302,9 +308,9 @@ class MainWindowCore(Ui_MainWindow):
         con.close()
 
         if email in value:
-            return False
-        else:
             return True
+        else:
+            return False
 
     # метод на корректность адресса электронной почты
     def email_validate(self):
