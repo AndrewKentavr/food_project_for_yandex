@@ -147,7 +147,7 @@ def cancel(update: Update, _: CallbackContext) -> int:
 
 
 def main() -> None:
-    updater = Updater(Globals.telegram_token)
+    updater = Updater('1756153265:AAHMWdh-nzkUDoS5j7sXlxgdt0m9AmXxQwU')
     dispatcher = updater.dispatcher
 
     conv_handler = ConversationHandler(

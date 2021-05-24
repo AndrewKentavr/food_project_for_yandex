@@ -54,10 +54,8 @@ class MainWindowCore(Ui_MainWindow):
 
         con = sqlite3.connect('db_main/data_base_main.db')
         cur = con.cursor()
-        # cur.execute(f"""INSERT INTO Users (nick_name, email, password, id_history)
-        # VALUES ("{nick_name}", "{email}", "{password}", "12");""")
 
-        cur.execute(f"""SELECT email, password, nick_name FROM users""")
+        cur.execute(f"""SELECT email, password, nick_name, id FROM users""")
         email_and_passwords = cur.fetchall()
         value = [email_and_passwords[i] for i in range(len(email_and_passwords))]
         con.commit()
@@ -69,6 +67,8 @@ class MainWindowCore(Ui_MainWindow):
 
                     self.login_window.widget_off()
                     self.nick_label.setText(i[2])
+                    self.id_user = i[3]
+                    print(self.id_user)
                     # self.history = get(f"https://food-project-lyceum.herokuapp.com"
                     #                    f"/api/search_histories/{self.user['user']['id']}").json() \
                     #     ['searches']['history']
@@ -116,12 +116,12 @@ class MainWindowCore(Ui_MainWindow):
         else:
             self.register_window.error_line.setText('имя пользователя введено некорректно')
 
-    # метод смены интерфейса
+    # метод смены интерфейса на логин
     def login_switch(self):
         self.register_window.widget_off()
         self.login_window.widget_on(MainWindow)
 
-    # метод смены интерфейса
+    # метод смены интерфейса на историю
     def main_history_switch(self):
         self.widget_off()
         self.history_window.widget_on(MainWindow, self.history)
@@ -139,6 +139,7 @@ class MainWindowCore(Ui_MainWindow):
         self.widget_on(MainWindow)
 
     def input_search_recipes(self):
+        what_is = 'recipe'
         text = ''
         text += self.lineEdit_info_recipe.text().lower()
 
@@ -159,7 +160,9 @@ class MainWindowCore(Ui_MainWindow):
         recipe = search_recipes(text)
 
         if recipe == 'AssertionError' or recipe == 'IndexError':
-            self.error_dialog.showMessage('Такого рецепта не существует')
+            err = 'Такого рецепта не существует'
+            self.error_dialog.showMessage(err)
+            self.add_history_db(str(text), err, what_is)
             return 0
 
         img_url = recipe[1]
@@ -189,13 +192,12 @@ class MainWindowCore(Ui_MainWindow):
         self.listWidget_info_recipe_2.clear()
         self.listWidget_info_recipe_2.addItem(recipe_text)
 
-        # put(f"https://food-project-lyceum.herokuapp.com/api/search_histories/{self.user['user']['id']}",
-        #     json={'title': source_text, 'date': str(datetime.now())}).json()
-        # self.history = get(f"https://food-project-lyceum.herokuapp.com/"
-        #                    f"api/search_histories/{self.user['user']['id']}").json() \
-        #     ['searches']['history']
+        self.add_history_db(str(text), 'cat', what_is)
+
 
     def output_random_recipes(self):
+        what_is = 'random recipes'
+
         ran_rec = random_recipes()
 
         ingred_random_recipe = recipe_ingredients_id(ran_rec[5])
@@ -224,13 +226,11 @@ class MainWindowCore(Ui_MainWindow):
         self.listWidget_random_recipe_2.clear()
         self.listWidget_random_recipe_2.addItem(text_inf)
 
-        # put(f"https://food-project-lyceum.herokuapp.com/api/search_histories/{self.user['user']['id']}",
-        #     json={'title': ran_rec[0], 'date': str(datetime.now())}).json()
-        # self.history = get(f"https://food-project-lyceum.herokuapp.com/"
-        #                    f"api/search_histories/{self.user['user']['id']}").json() \
-        #     ['searches']['history']
+        self.add_history_db('рандомнй рецепт', ran_rec[0], what_is)
+
 
     def input_search_ingredients(self):
+        what_is = 'ingredients'
 
         text = ''
         text += self.lineEdit_info_ingredient.text().lower()
@@ -249,19 +249,21 @@ class MainWindowCore(Ui_MainWindow):
             text = english_trans(text)
 
         ingredient = ingredient_search(text)  # [0] - id; [1] - name
-
+        name = str(ingredient[1])
         if ingredient == 'AssertionError' or ingredient == 'IndexError':
-            self.error_dialog.showMessage('Такого ингредиента не существует')
+            err = 'Такого ингредиента не существует'
+            self.error_dialog.showMessage(err)
+            self.add_history_db(str(text), err, what_is)
             return 0
 
         info_ing = ingredient_information(ingredient[0])
 
-        text = ''
-        text += 'Name -- ' + str(ingredient[1]) + '\n'
-        text += 'Calories: ' + str(info_ing['Calories']['amount']) + '\n'
-        text += 'Fat: ' + str(info_ing['Fat']['amount']) + '\n'
-        text += 'Sugar: ' + str(info_ing['Sugar']['amount']) + '\n'
-        text += 'Protein: ' + str(info_ing['Protein']['amount']) + '\n'
+        text_1 = ''
+        text_1 += 'Name -- ' + name + '\n'
+        text_1 += 'Calories: ' + str(info_ing['Calories']['amount']) + '\n'
+        text_1 += 'Fat: ' + str(info_ing['Fat']['amount']) + '\n'
+        text_1 += 'Sugar: ' + str(info_ing['Sugar']['amount']) + '\n'
+        text_1 += 'Protein: ' + str(info_ing['Protein']['amount']) + '\n'
 
         text_2 = ''
         text_3 = ''
@@ -279,7 +281,7 @@ class MainWindowCore(Ui_MainWindow):
             count += 1
 
         self.listWidget_info_ingredients.clear()
-        self.listWidget_info_ingredients.addItem(text)
+        self.listWidget_info_ingredients.addItem(text_1)
 
         self.listWidget_info_ingredients_2.clear()
         self.listWidget_info_ingredients_2.addItem(text_2)
@@ -287,11 +289,7 @@ class MainWindowCore(Ui_MainWindow):
         self.listWidget_info_ingredients_3.clear()
         self.listWidget_info_ingredients_3.addItem(text_3)
 
-        # put(f"https://food-project-lyceum.herokuapp.com/api/search_histories/{self.user['user']['id']}",
-        #     json={'title': source_text, 'date': str(datetime.now())}).json()
-        # self.history = get(f"https://food-project-lyceum.herokuapp.com/"
-        #                    f"api/search_histories/{self.user['user']['id']}").json() \
-        #     ['searches']['history']
+        self.add_history_db(str(text), name, what_is)
 
     # метод проверки пользователя в базе данных для функции регистрации
     def email_in_database(self):
@@ -302,7 +300,6 @@ class MainWindowCore(Ui_MainWindow):
         cur.execute(f"""SELECT email FROM users""")
         cat = cur.fetchall()
         value = [cat[i][0] for i in range(len(cat))]
-        print(value)
         con.commit()
         cur.close()
         con.close()
@@ -338,6 +335,15 @@ class MainWindowCore(Ui_MainWindow):
                 len(self.register_window.password_register_line.text()) >= 8:
             return True
         return False
+
+    def add_history_db(self, search, name, what_is):
+        con = sqlite3.connect('db_main/data_base_main.db')
+        cur = con.cursor()
+        cur.execute(f"""INSERT INTO History (time, id_user, name, search, what_is)
+        VALUES ("{str(datetime.now())}", {self.id_user}, "{name}", "{search}", "{what_is}");""")
+        con.commit()
+        cur.close()
+        con.close()
 
 
 if __name__ == '__main__':
