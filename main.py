@@ -151,9 +151,8 @@ class MainWindowCore(Ui_MainWindow):
             if ' ' not in text:
                 self.error_dialog.showMessage('Вы ввели недопустимые символы')
                 return 0
-        source_text = text
         lang = detect_language(text)
-
+        sourse_text = str(text)
         if lang != 'en':  # тут с помощью Api Яндекса определяется на каком языке написан запрос
             text = english_trans(text)
 
@@ -174,7 +173,10 @@ class MainWindowCore(Ui_MainWindow):
         self.litle_lable.setPixmap(pixmap)
 
         ingred_recipe = recipe_ingredients_id(recipe[0])
+        name = str(recipe[2])
+
         text_ing = ''
+        text_ing += '----' + name + '----' + '\n'
         text_ing += 'Ingredients:' + '\n'
         for i in range(len(ingred_recipe)):
             text_ing += '-' + str(ingred_recipe[i]) + '\n'
@@ -192,8 +194,7 @@ class MainWindowCore(Ui_MainWindow):
         self.listWidget_info_recipe_2.clear()
         self.listWidget_info_recipe_2.addItem(recipe_text)
 
-        self.add_history_db(str(text), 'cat', what_is)
-
+        self.add_history_db(sourse_text, name, what_is)
 
     def output_random_recipes(self):
         what_is = 'random recipes'
@@ -228,7 +229,6 @@ class MainWindowCore(Ui_MainWindow):
 
         self.add_history_db('рандомнй рецепт', ran_rec[0], what_is)
 
-
     def input_search_ingredients(self):
         what_is = 'ingredients'
 
@@ -244,7 +244,7 @@ class MainWindowCore(Ui_MainWindow):
             return 0
 
         lang = detect_language(text)
-
+        sourse_text = str(text)
         if lang != 'en':
             text = english_trans(text)
 
@@ -253,7 +253,7 @@ class MainWindowCore(Ui_MainWindow):
         if ingredient == 'AssertionError' or ingredient == 'IndexError':
             err = 'Такого ингредиента не существует'
             self.error_dialog.showMessage(err)
-            self.add_history_db(str(text), err, what_is)
+            self.add_history_db(sourse_text, err, what_is)
             return 0
 
         info_ing = ingredient_information(ingredient[0])
@@ -289,7 +289,7 @@ class MainWindowCore(Ui_MainWindow):
         self.listWidget_info_ingredients_3.clear()
         self.listWidget_info_ingredients_3.addItem(text_3)
 
-        self.add_history_db(str(text), name, what_is)
+        self.add_history_db(sourse_text, name, what_is)
 
     # метод проверки пользователя в базе данных для функции регистрации
     def email_in_database(self):

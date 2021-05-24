@@ -14,9 +14,10 @@ def search_recipes(query):  # Ищет рецепт
         assert response
         json_response = response.json()
         try:
+            name = json_response['results'][0]['title']
             id_recipe = json_response['results'][0]['id']
             image_recipe = json_response['results'][0]['image']
-            return [id_recipe, image_recipe]
+            return [id_recipe, image_recipe, name]
         except IndexError:
             return "IndexError"
     except AssertionError:
