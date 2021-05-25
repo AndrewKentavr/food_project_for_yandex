@@ -68,10 +68,13 @@ class MainWindowCore(Ui_MainWindow):
                     self.login_window.widget_off()
                     self.nick_label.setText(i[2])
                     self.id_user = i[3]
-                    print(self.id_user)
-                    # self.history = get(f"https://food-project-lyceum.herokuapp.com"
-                    #                    f"/api/search_histories/{self.user['user']['id']}").json() \
-                    #     ['searches']['history']
+                    con = sqlite3.connect('db_main/data_base_main.db')
+                    cur = con.cursor()
+                    cur.execute(f"""SELECT search, name, what_is, time FROM history
+                    WHERE id_user = '{self.id_user}';""")
+                    self.history = cur.fetchall()
+                    cur.close()
+                    con.close()
                     self.widget_on(MainWindow)
                 else:
                     self.login_window.error_line.setText('пароль или логин введены неккоректно')
