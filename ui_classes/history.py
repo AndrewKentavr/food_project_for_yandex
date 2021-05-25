@@ -1,3 +1,58 @@
+import sqlite3
+
+# string = input().split()
+# nick_name, email, password = string[0], string[1], string[2]
+#
+#
+# def reg(nick_name, email, password):
+#     con = sqlite3.connect('db_main/data_base_main.db')
+#     cur = con.cursor()
+#     # cur.execute(f"""INSERT INTO Users (nick_name, email, password, id_history)
+#     # VALUES ("{nick_name}", "{email}", "{password}", "12");""")
+#
+#     cur.execute(f"""SELECT id FROM users""")
+#     value = cur.fetchall()
+#     print(value)
+#     con.commit()
+#     cur.close()
+#     con.close()
+#
+#
+# reg(nick_name, email, password)
+# from datetime import datetime
+# name = 'jopa'
+# description = 'jopa'
+#
+#
+# con = sqlite3.connect('db_main/data_base_main.db')
+# cur = con.cursor()
+# cur.execute(f"""INSERT INTO History (time, id_user, name, description)
+# VALUES ("{str(datetime.now())}", "2", "{name}", "{description}");""")
+#
+# # cur.execute(f"""SELECT email, password FROM users""")
+# # cat = cur.fetchall()
+# # value = [cat[i] for i in range(len(cat))]
+# # print(value)
+# con.commit()
+# cur.close()
+# con.close()
+#
+# for i in value:
+#     if 'vl' in i:
+#         if i[1] == 'j714827':
+#             print(i)
+# n = 1
+#
+# con = sqlite3.connect('db_main/data_base_main.db')
+# cur = con.cursor()
+# cur.execute(f"""SELECT search, name, what_is, time FROM history
+# WHERE id_user = '{n}';""")
+# cat = cur.fetchall()
+# cur.close()
+# con.close()
+# history = ['\t'.join(element) for element in cat]
+# print(history)
+
 # -*- coding: utf-8 -*-
 
 # Form implementation generated from reading ui file 'history_shit.ui'
@@ -55,8 +110,20 @@ class Ui_Dialog_history(object):
         dialog.resize(540, 760)
         self.btn_exit.show()
 
-        history = json.loads(history)
-        history = ['\t'.join(element) for element in history]
+        history_0 = history
+
+        history = []
+
+        for element in history_0:
+            tt = []
+            for i in element:
+                if len(i) > 17:
+                    tt.append(i[0:17] + '..')
+                else:
+                    tt.append(i)
+            tt = '\t'.join(tt)
+            history.append(tt)
+
         model = QtGui.QStandardItemModel()
         self.list_history.setModel(model)
         for element in history:

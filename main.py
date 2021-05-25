@@ -133,8 +133,13 @@ class MainWindowCore(Ui_MainWindow):
     def history_clear(self):
         model = QtGui.QStandardItemModel()
         self.history_window.list_history.setModel(model)
-        # put(f"https://food-project-lyceum.herokuapp.com/api/search_histories/{self.user['user']['id']}",
-        #     json={'title': 'NULL', 'date': str(datetime.now())}).json()
+        con = sqlite3.connect(Globals.db_name)
+        cur = con.cursor()
+        cur.execute(f"""DELETE FROM history
+        WHERE id_user = '{self.id_user}';""")
+        con.commit()
+        cur.close()
+        con.close()
 
     # метод смены интерфейса
     def history_main_switch(self):
@@ -162,7 +167,7 @@ class MainWindowCore(Ui_MainWindow):
         recipe = search_recipes(text)
 
         if recipe == 'AssertionError' or recipe == 'IndexError':
-            err = 'Такого рецепта не существует'
+            err = '|не существует|'
             self.error_dialog.showMessage(err)
             self.add_history_db(str(text), err, what_is)
             return 0
@@ -230,7 +235,7 @@ class MainWindowCore(Ui_MainWindow):
         self.listWidget_random_recipe_2.clear()
         self.listWidget_random_recipe_2.addItem(text_inf)
 
-        self.add_history_db('рандомнй рецепт', ran_rec[0], what_is)
+        self.add_history_db('___', ran_rec[0], what_is)
 
     def input_search_ingredients(self):
         what_is = 'ingredients'
@@ -254,7 +259,7 @@ class MainWindowCore(Ui_MainWindow):
         ingredient = ingredient_search(text)  # [0] - id; [1] - name
         name = str(ingredient[1])
         if ingredient == 'AssertionError' or ingredient == 'IndexError':
-            err = 'Такого ингредиента не существует'
+            err = '|не существует|'
             self.error_dialog.showMessage(err)
             self.add_history_db(sourse_text, err, what_is)
             return 0
@@ -340,10 +345,10 @@ class MainWindowCore(Ui_MainWindow):
         return False
 
     def add_history_db(self, search, name, what_is):
-        con = sqlite3.connect('db_main/data_base_main.db')
+        con = sqlite3.connect(Globals.db_name)
         cur = con.cursor()
         cur.execute(f"""INSERT INTO History (time, id_user, name, search, what_is)
-        VALUES ("{str(datetime.now())}", {self.id_user}, "{name}", "{search}", "{what_is}");""")
+        VALUES ("{datetime.strftime(datetime.now(), "%y.%m.%d %H:%M:%S")}", {self.id_user}, "{name}", "{search}", "{what_is}");""")
         con.commit()
         cur.close()
         con.close()
