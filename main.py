@@ -12,6 +12,7 @@ from ui_classes.authorization import Ui_Dialog_2
 from ui_classes.history import Ui_Dialog_history
 from ui_classes.main_windowUI import Ui_MainWindow
 from ui_classes.registration import Ui_Dialog
+from globals import *
 
 
 class MainWindowCore(Ui_MainWindow):
@@ -68,13 +69,7 @@ class MainWindowCore(Ui_MainWindow):
                     self.login_window.widget_off()
                     self.nick_label.setText(i[2])
                     self.id_user = i[3]
-                    con = sqlite3.connect('db_main/data_base_main.db')
-                    cur = con.cursor()
-                    cur.execute(f"""SELECT search, name, what_is, time FROM history
-                    WHERE id_user = '{self.id_user}';""")
-                    self.history = cur.fetchall()
-                    cur.close()
-                    con.close()
+                    self.reload_history_db()
                     self.widget_on(MainWindow)
                 else:
                     self.login_window.error_line.setText('пароль или логин введены неккоректно')
@@ -101,7 +96,6 @@ class MainWindowCore(Ui_MainWindow):
                             cur.execute(f"""INSERT INTO Users (nick_name, email, password)
                             VALUES ("{self.register_window.nick_line.text()}", "{self.register_window.email_register_line.text()}", "{self.register_window.password_register_line.text()}");""")
 
-                            value = cur.fetchall()
                             con.commit()
                             cur.close()
                             con.close()
@@ -203,6 +197,7 @@ class MainWindowCore(Ui_MainWindow):
         self.listWidget_info_recipe_2.addItem(recipe_text)
 
         self.add_history_db(sourse_text, name, what_is)
+        self.reload_history_db()
 
     def output_random_recipes(self):
         what_is = 'random recipes'
@@ -236,6 +231,7 @@ class MainWindowCore(Ui_MainWindow):
         self.listWidget_random_recipe_2.addItem(text_inf)
 
         self.add_history_db('___', ran_rec[0], what_is)
+        self.reload_history_db()
 
     def input_search_ingredients(self):
         what_is = 'ingredients'
@@ -298,6 +294,7 @@ class MainWindowCore(Ui_MainWindow):
         self.listWidget_info_ingredients_3.addItem(text_3)
 
         self.add_history_db(sourse_text, name, what_is)
+        self.reload_history_db()
 
     # метод проверки пользователя в базе данных для функции регистрации
     def email_in_database(self):
@@ -350,6 +347,15 @@ class MainWindowCore(Ui_MainWindow):
         cur.execute(f"""INSERT INTO History (time, id_user, name, search, what_is)
         VALUES ("{datetime.strftime(datetime.now(), "%y.%m.%d %H:%M:%S")}", {self.id_user}, "{name}", "{search}", "{what_is}");""")
         con.commit()
+        cur.close()
+        con.close()
+
+    def reload_history_db(self):
+        con = sqlite3.connect('db_main/data_base_main.db')
+        cur = con.cursor()
+        cur.execute(f"""SELECT search, name, what_is, time FROM history
+        WHERE id_user = '{self.id_user}';""")
+        self.history = cur.fetchall()
         cur.close()
         con.close()
 
